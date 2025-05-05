@@ -2,12 +2,15 @@ import firebase_admin
 from firebase_admin import credentials, db
 import streamlit as st
 import pandas as pd
-import os
+import json
 
 # Đường dẫn tới file JSON key
 # key_path = os.environ.get("FIREBASE_KEY_PATH")
 # print("Firebase key path:", key_path)  # kiểm tra in ra đường dẫn
-cred = credentials.Certificate('analysis\key\esp32-9c871-firebase-adminsdk-fbsvc-c1266e7f1e.json')
+firebase_json = st.secrets["FIREBASE_CREDENTIALS"]
+cred_dict = json.loads(firebase_json)
+
+cred = credentials.Certificate(cred_dict)
 # Chỉ initialize nếu chưa có default app
 # try:
 #     firebase_admin.get_app()
