@@ -6,3 +6,4 @@ matplotlib
 scipy
 scikit-learn
 opencv-python
+streamlit-autorefresh
