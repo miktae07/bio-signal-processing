@@ -6,7 +6,7 @@
 
 ## 📘 Giới thiệu
 
-Bio‑Signal‑Processing là dự án hệ thống giám sát sức khỏe đa kênh, thu thập và phân tích dữ liệu sinh học (ECG, nhịp tim, SpO₂, nhiệt độ cơ thể…) theo thời gian thực. Hệ thống gồm:
+Bio‑Signal‑Processing là dự án hệ thống giám sát sức khỏe đa kênh, thu thập và phân tích dữ liệu sinh học (ECG, nhịp tim, SpO₂, nhiệt độ cơ thể…) theo thời điểmthực. Hệ thống gồm:
 
 * **Firmware (ESP32):** Đọc tín hiệu từ nhiều cảm biến, kết nối Wi-Fi, đẩy dữ liệu lên Firebase Realtime Database.
 * **Backend & Dashboard:** Ứng dụng Python/Streamlit để trực quan hóa, phân tích, cảnh báo và xuất báo cáo.
@@ -19,7 +19,7 @@ Mục tiêu chính là hỗ trợ giám sát liên tục, cảnh báo sớm và 
 ## 🚀 Tính năng chính
 
 1. **Thu thập dữ liệu đa kênh:** ECG, SpO₂, nhịp tim, nhiệt độ, v.v.
-2. **Trực quan thời gian thực:** Biểu đồ động, tự động refresh sau mỗi 10 giây.
+2. **Trực quan thời điểmthực:** Biểu đồ động, tự động refresh sau mỗi 10 giây.
 3. **Phân tích nhanh:** Tính mean, std, min, max cho n mẫu cuối.
 4. **Cảnh báo bất thường:** So sánh với threshold (mean ± 2·std).
 5. **Xuất báo cáo:** PDF/TXT, tải về chỉ với một nút.
@@ -128,6 +128,7 @@ git checkout -b feature/<tên-tính-năng>
 * Ví dụ:
 
   ```bash
+  Modify analysis/demo.py, add function to export PDF
   ```
 
 git add analysis/demo.py
