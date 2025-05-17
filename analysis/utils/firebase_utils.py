@@ -6,13 +6,33 @@ import firebase_admin
 from firebase_admin import credentials, db
 import streamlit as st
 
+
 def init_firebase():
     if not firebase_admin._apps:
+        # Lấy raw JSON string từ secrets
         firebase_json = st.secrets["FIREBASE_CREDENTIALS"]
-        cred = credentials.Certificate(json.loads(firebase_json))
+
+        # Debug: in ra để xem đúng nội dung string
+        st.text("DEBUG — raw firebase_json:")
+        st.text(repr(firebase_json))
+
+        try:
+            config = json.loads(firebase_json)
+        except Exception as e:
+            st.error(f"JSON load error: {e}")
+            raise
+
+        # Debug: in ra dict sau khi load
+        st.text("DEBUG — parsed config keys:")
+        st.text(", ".join(config.keys()))
+
+        # Tạo credential và khởi app với databaseURL
+        cred = credentials.Certificate(config)
         firebase_admin.initialize_app(cred, {
             'databaseURL': 'https://esp32-9c871-default-rtdb.firebaseio.com/'
         })
+
+        st.success("Firebase initialized successfully!")
 
 def parse_node(sensor, node, path_keys):
     records = []
