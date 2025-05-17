@@ -148,16 +148,13 @@ git push -u origin feature/<tên-tính-năng>
 * Trên GitHub, open Pull Request từ `feature/<tên-tính-năng>` về `main`.
 * Sau khi review & merge, local bạn cần cập nhật nhánh `main`:
 
-  ```bash
-  ```
-
-git checkout main
-git pull origin main
-
-````
+```bash
+  git checkout main
+  git pull origin main
+```
 
 ### 5. Đẩy thay đổi trực tiếp lên `main`
-> Dành cho các cập nhật nhỏ hoặc hotfix, bạn có thể làm trên `main` như sau:
+Dành cho các cập nhật nhỏ hoặc hotfix, bạn có thể làm trên `main` như sau:
 ```bash
 # Chuyển về main và cập nhật
 git checkout main
