@@ -5,6 +5,6 @@ pandas
 matplotlib
 scipy
 scikit-learn
-opencv-python
+opencv-python-headless
 streamlit-autorefresh
 ultralytics
