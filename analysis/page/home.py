@@ -11,7 +11,6 @@ def show_home_page():
     """
     Trang chủ hiển thị dữ liệu
     """
-    
     st_autorefresh(interval= AUTO_REFRESH_INTERVAL_MS, key="auto_refresh")
     st.header("Trang Chủ – Hiển thị dữ liệu")
     

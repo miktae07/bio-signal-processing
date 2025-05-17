@@ -12,8 +12,8 @@ def init_firebase():
         firebase_json = st.secrets["FIREBASE_CREDENTIALS"]
 
         # Debug: in ra để xem đúng nội dung string
-        st.text("DEBUG — raw firebase_json:")
-        st.text(repr(firebase_json))
+        # st.text("DEBUG — raw firebase_json:")
+        # st.text(repr(firebase_json))
 
         try:
             config = json.loads(firebase_json)
@@ -22,8 +22,8 @@ def init_firebase():
             raise
 
         # Debug: in ra dict sau khi load
-        st.text("DEBUG — parsed config keys:")
-        st.text(", ".join(config.keys()))
+        # st.text("DEBUG — parsed config keys:")
+        # st.text(", ".join(config.keys()))
 
         # Tạo credential và khởi app với databaseURL
         cred = credentials.Certificate(config)

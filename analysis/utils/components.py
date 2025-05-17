@@ -1,5 +1,7 @@
 import streamlit as st
 import altair as alt
+from model.analyse import *
+from datetime import timedelta
 
 def get_unit(sensor):
     """Trả về đơn vị của cảm biến nếu có"""
@@ -27,15 +29,15 @@ def get_sensor_icon(sensor):
     else:
         return "🔧"  # Mặc định
 
-import streamlit as st
-
 def show_metrics(sensor_groups):
     st.markdown("## 📊 Dữ liệu Hiện Tại")
+
     with st.container():
         cols = st.columns(len(sensor_groups))
 
         for i, (sensor, df) in enumerate(sensor_groups.items()):
             with cols[i]:
+                # 📌 1. Thông tin cơ bản
                 value = df['value'].iloc[-1]
                 timestamp = df.index[-1]
                 unit = get_unit(sensor)
@@ -43,19 +45,35 @@ def show_metrics(sensor_groups):
                 display_label = f"{icon} {sensor}"
                 display_value = f"{value:.2f} {unit}" if unit else f"{value:.2f}"
 
-                # 🟩 1. Thẻ số liệu có border
+                # 🟩 2. Hiển thị số liệu
                 st.metric(label=display_label, value=display_value, delta=None, border=True)
 
-                # 🟩 2. Hiển thị thời gian in đậm
+                # 🕒 3. Hiển thị thời gian
                 st.markdown(
                     f"<div style='margin-top: -10px; font-size: 14px; color: #555;'>🕒 <strong>{timestamp.strftime('%d-%m-%Y %H:%M:%S')}</strong></div>",
                     unsafe_allow_html=True
                 )
 
-                # 🟩 3. Hiển thị trạng thái sức khỏe
-                status = "✅ Khỏe mạnh"  # Placeholder cho xử lý sau
+                # 🩺 4. Phân tích trạng thái trên 5 phút dữ liệu cuối
+                end_time = df.index.max()
+                start_time = end_time - timedelta(minutes=5)
+                window_df = df[(df.index >= start_time) & (df.index <= end_time)]
+
+                status = "Không xác định"
+                try:
+                    if "BPM" in sensor.upper():
+                        _, bpm_status = analyze_bpm_window(window_df, start_time, end_time)
+                        status = bpm_status
+                    elif "SPO2" in sensor.upper():
+                        _, spo2_status = analyze_spo2_window(window_df, start_time, end_time)
+                        status = spo2_status
+                except Exception as e:
+                    status = f"Lỗi: {str(e)}"
+
+                # ✅ 5. Hiển thị trạng thái
+                color = "green" if "bình thường" in status.lower() else "red"
                 st.markdown(
-                    f"<div style='font-size: 14px; color: green;'>🩺 <strong>Trạng thái:</strong> {status}</div>",
+                    f"<div style='font-size: 14px; color: {color};'>🩺 <strong>Trạng thái:</strong> {status}</div>",
                     unsafe_allow_html=True
                 )
 
