@@ -11,7 +11,7 @@ def show_home_page():
     """
     Trang chủ hiển thị dữ liệu
     """
-    st.image("assests/banner.jpg", use_container_width = True)
+    # st.image("assests/banner.jpg", use_container_width = True)
     st_autorefresh(interval= AUTO_REFRESH_INTERVAL_MS, key="auto_refresh")
     st.header("Trang Chủ – Hiển thị dữ liệu")
     
