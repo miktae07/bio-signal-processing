@@ -6,7 +6,6 @@ import firebase_admin
 from firebase_admin import credentials, db
 import streamlit as st
 
-
 def init_firebase():
     if not firebase_admin._apps:
         # Lấy raw JSON string từ secrets
