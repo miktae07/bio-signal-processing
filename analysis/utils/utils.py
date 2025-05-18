@@ -5,3 +5,17 @@ AUTO_REFRESH_INTERVAL_MS = 10_000  # 10 giây
 DATA_PATH = "./data"
 LOG_PATH = "./logs"
 
+# utils.py
+
+def map_vietnamese_to_english(text):
+    mapping = {
+        "Nhịp tim chậm (Bradycardia)": "Bradycardia (Slow heart rate)",
+        "Nhịp tim bình thường": "Normal heart rate",
+        "Nhịp tim nhanh (Tachycardia)": "Tachycardia (Fast heart rate)",
+        "Không có dữ liệu BPM": "No BPM data",
+        "Suy hô hấp nặng (SpO2 < 90%)": "Severe respiratory failure (SpO2 < 90%)",
+        "Suy hô hấp nhẹ (90% ≤ SpO2 < 95%)": "Mild respiratory failure (90% ≤ SpO2 < 95%)",
+        "SpO2 bình thường (≥ 95%)": "Normal SpO2 (≥ 95%)",
+        "Không có dữ liệu SpO2": "No SpO2 data"
+    }
+    return mapping.get(text, text)

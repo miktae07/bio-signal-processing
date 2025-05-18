@@ -73,13 +73,13 @@ def analyze_spo2_window(
     #https://www.vinmec.com/vie/bai-viet/chi-so-spo2-o-nguoi-binh-thuong-la-bao-nhieu-vi
 
     if pd.isna(mean):
-        status = "Không có dữ liệu SpO₂"
+        status = "Không có dữ liệu SpO2"
     elif mean < 90:
-        status = "Suy hô hấp nặng (SpO₂ < 90%)"
+        status = "Suy hô hấp nặng (SpO2 < 90%)"
     elif mean < 95:
-        status = "Suy hô hấp nhẹ (90% ≤ SpO₂ < 95%)"
+        status = "Suy hô hấp nhẹ (90% ≤ SpO2 < 95%)"
     else:
-        status = "SpO₂ bình thường (≥ 95%)"
+        status = "SpO2 bình thường (≥ 95%)"
 
     return stats, status
 
