@@ -8,6 +8,4 @@ scikit-learn
 opencv-python-headless
 streamlit-autorefresh
 ultralytics
-libgl1
-libglib2.0-0
 tensorflow
