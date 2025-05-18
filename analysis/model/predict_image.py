@@ -6,8 +6,8 @@ from tensorflow.keras.models import load_model as keras_load
 from typing import Tuple, List, Union, Dict
 import numpy as np
 import tensorflow as tf
-import torch
-import cv2
+# import torch
+# import cv2
 
 # Xác định thư mục chứa weights
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -193,64 +193,64 @@ def classify_chest_xray(
     return {label: float(preds[i]) for i, label in enumerate(LABELS)}
 
 
-def detect_brain_abnormalities(mri_image):
-    """
-    Phát hiện các bất thường trong ảnh MRI não và trả về ảnh có các bất thường được làm nổi bật.
+# def detect_brain_abnormalities(mri_image):
+#     """
+#     Phát hiện các bất thường trong ảnh MRI não và trả về ảnh có các bất thường được làm nổi bật.
     
-    :param mri_image: Ảnh MRI não dưới dạng numpy array với shape (H, W, 3), 
-                      trong đó H và W là chiều cao và chiều rộng, và 3 là số kênh (pre-contrast, FLAIR, post-contrast).
-    :return: Ảnh kết quả dưới dạng numpy array với shape (H, W, 3), uint8, có các bất thường được làm nổi bật bằng màu đỏ.
-    """
+#     :param mri_image: Ảnh MRI não dưới dạng numpy array với shape (H, W, 3), 
+#                       trong đó H và W là chiều cao và chiều rộng, và 3 là số kênh (pre-contrast, FLAIR, post-contrast).
+#     :return: Ảnh kết quả dưới dạng numpy array với shape (H, W, 3), uint8, có các bất thường được làm nổi bật bằng màu đỏ.
+#     """
     
-    # Bước 1: Load mô hình U-Net đã huấn luyện sẵn
-    model = torch.hub.load('mateuszbuda/brain-segmentation-pytorch', 'unet', in_channels=3, out_channels=1, init_features=32, pretrained=True)
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = model.to(device)
+#     # Bước 1: Load mô hình U-Net đã huấn luyện sẵn
+#     model = torch.hub.load('mateuszbuda/brain-segmentation-pytorch', 'unet', in_channels=3, out_channels=1, init_features=32, pretrained=True)
+#     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+#     model = model.to(device)
     
-    # Bước 2: Lưu trữ kích thước gốc của ảnh
-    H, W, _ = mri_image.shape
+#     # Bước 2: Lưu trữ kích thước gốc của ảnh
+#     H, W, _ = mri_image.shape
     
-    # Bước 3: Resize ảnh về kích thước 256x256 (kích thước yêu cầu của mô hình)
-    mri_resized = cv2.resize(mri_image, (256, 256), interpolation=cv2.INTER_LINEAR)
+#     # Bước 3: Resize ảnh về kích thước 256x256 (kích thước yêu cầu của mô hình)
+#     mri_resized = cv2.resize(mri_image, (256, 256), interpolation=cv2.INTER_LINEAR)
     
-    # Bước 4: Chuẩn hóa ảnh (z-score normalization per channel)
-    mri_normalized = np.zeros_like(mri_resized)
-    for c in range(3):
-        channel = mri_resized[:, :, c]
-        mean = np.mean(channel)
-        std = np.std(channel)
-        if std > 0:
-            mri_normalized[:, :, c] = (channel - mean) / std
-        else:
-            mri_normalized[:, :, c] = 0  # Tránh chia cho không
+#     # Bước 4: Chuẩn hóa ảnh (z-score normalization per channel)
+#     mri_normalized = np.zeros_like(mri_resized)
+#     for c in range(3):
+#         channel = mri_resized[:, :, c]
+#         mean = np.mean(channel)
+#         std = np.std(channel)
+#         if std > 0:
+#             mri_normalized[:, :, c] = (channel - mean) / std
+#         else:
+#             mri_normalized[:, :, c] = 0  # Tránh chia cho không
     
-    # Bước 5: Chuyển đổi ảnh thành tensor và di chuyển lên GPU nếu có
-    input_tensor = torch.from_numpy(mri_normalized).permute(2, 0, 1).float().unsqueeze(0).to(device)
+#     # Bước 5: Chuyển đổi ảnh thành tensor và di chuyển lên GPU nếu có
+#     input_tensor = torch.from_numpy(mri_normalized).permute(2, 0, 1).float().unsqueeze(0).to(device)
     
-    # Bước 6: Dự đoán bằng mô hình
-    with torch.no_grad():
-        output = model(input_tensor)
+#     # Bước 6: Dự đoán bằng mô hình
+#     with torch.no_grad():
+#         output = model(input_tensor)
     
-    # Bước 7: Chuyển đổi output thành numpy array và áp dụng ngưỡng (threshold) để lấy mask nhị phân
-    mask = (output.squeeze().cpu().numpy() > 0.5).astype(int)  # Shape: (256, 256)
+#     # Bước 7: Chuyển đổi output thành numpy array và áp dụng ngưỡng (threshold) để lấy mask nhị phân
+#     mask = (output.squeeze().cpu().numpy() > 0.5).astype(int)  # Shape: (256, 256)
     
-    # Bước 8: Resize mask về kích thước gốc của ảnh
-    mask_resized = cv2.resize(mask, (W, H), interpolation=cv2.INTER_NEAREST)
+#     # Bước 8: Resize mask về kích thước gốc của ảnh
+#     mask_resized = cv2.resize(mask, (W, H), interpolation=cv2.INTER_NEAREST)
     
-    # Bước 9: Chuẩn bị ảnh gốc để hiển thị (chỉ lấy kênh đầu tiên và scale về [0, 255])
-    first_channel = mri_image[:, :, 0]
-    min_val = np.min(first_channel)
-    max_val = np.max(first_channel)
-    if max_val > min_val:
-        displayed = (first_channel - min_val) / (max_val - min_val) * 255
-    else:
-        displayed = np.zeros_like(first_channel)
-    displayed = displayed.astype(np.uint8)
+#     # Bước 9: Chuẩn bị ảnh gốc để hiển thị (chỉ lấy kênh đầu tiên và scale về [0, 255])
+#     first_channel = mri_image[:, :, 0]
+#     min_val = np.min(first_channel)
+#     max_val = np.max(first_channel)
+#     if max_val > min_val:
+#         displayed = (first_channel - min_val) / (max_val - min_val) * 255
+#     else:
+#         displayed = np.zeros_like(first_channel)
+#     displayed = displayed.astype(np.uint8)
     
-    # Bước 10: Tạo ảnh RGB từ ảnh grayscale
-    rgb = np.stack([displayed, displayed, displayed], axis=2)
+#     # Bước 10: Tạo ảnh RGB từ ảnh grayscale
+#     rgb = np.stack([displayed, displayed, displayed], axis=2)
     
-    # Bước 11: Làm nổi bật các bất thường bằng màu đỏ
-    rgb[mask_resized == 1] = np.array([255, 0, 0])
+#     # Bước 11: Làm nổi bật các bất thường bằng màu đỏ
+#     rgb[mask_resized == 1] = np.array([255, 0, 0])
     
-    return rgb
+#     return rgb

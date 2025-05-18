@@ -3,7 +3,7 @@ from PIL import Image
 from tensorflow.keras.models import load_model as load_keras_model
 from pathlib import Path
 import numpy as np
-from model.predict_image import model_loader, detect_objects, predict_ct_liver_mask, detect_brain_abnormalities
+from model.predict_image import model_loader, detect_objects, predict_ct_liver_mask
 
 # Xác định thư mục gốc
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -75,12 +75,12 @@ def show_image_page():
             with st.spinner("🔍 Đang phân tích..."):
                 # Trường hợp đặc biệt: MRI - Não
                 if image_type == "MRI" and body_part_vi == "Não":
-                    result_img = detect_brain_abnormalities(img_array)
-                    if result_img is not None:
-                        st.image(result_img, caption="🎯 Kết quả phân đoạn bất thường (đỏ)", use_container_width=True)
-                    else:
-                        st.warning("⚠️ Không thể phân tích ảnh MRI.")
-
+                    st.warning("⚠️ Không phân tích được ảnh MRI.")
+                    # result_img = detect_brain_abnormalities(img_array)
+                    # if result_img is not None:
+                    #     st.image(result_img, caption="🎯 Kết quả phân đoạn bất thường (đỏ)", use_container_width=True)
+                    # else:
+                    #     
                 # Trường hợp đặc biệt: CT - Gan
                 elif image_type == "CT" and body_part_vi == "Gan":
                     model_path = KERAS_DIR / "final_unet_resnet18_model.keras"
