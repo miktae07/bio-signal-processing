@@ -83,7 +83,7 @@ def show_image_page():
                     #     
                 # Trường hợp đặc biệt: CT - Gan
                 elif image_type == "CT" and body_part_vi == "Gan":
-                    model_path = KERAS_DIR / "final_unet_resnet18_model.keras"
+                    model_path = "best_unet_resnet18_model.keras"
                     mask_img = predict_ct_liver_mask(str(model_path), image)
                     st.image(mask_img, caption="🎯 Kết quả phân đoạn Gan", use_container_width=True)
 
