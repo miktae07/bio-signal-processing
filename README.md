@@ -158,7 +158,7 @@ Dành cho các cập nhật nhỏ hoặc hotfix, bạn có thể làm trên `mai
 ```bash
 # Chuyển về main và cập nhật
 git checkout main
-git pull origin main
+git pull origin main or git pull --rebase
 # Thực hiện thay đổi nhỏ
 # git add ... && git commit -m "fix(main): <mô tả>"
 # Đẩy trực tiếp lên main
@@ -171,7 +171,7 @@ git push origin main
 
 ```bash
 # Trong thư mục gốc và kích hoạt venv
-streamlit run analysis/demo.py
+streamlit run main.py
 ```
 
 * Mặc định mở Dashboard; dùng sidebar hoặc nút để chuyển sang trang Analysis.
