@@ -95,6 +95,7 @@ def show_analysis_page():
 
             summary_rows.append(["SpO2", spo2_stats['min'], spo2_stats['max'], spo2_stats['mean'], spo2_status_en])
 
+        
         if export_data:
             # Tạo DataFrame để export, bỏ cột index
             df_export = pd.DataFrame(export_data, columns=["Data Type", "Timestamp", "Value", "Analysis Result"])
