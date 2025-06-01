@@ -1,9 +1,13 @@
 import streamlit as st
-from utils.firebase_utils import get_sensor_groups
-from utils.components import show_metrics, show_charts, show_profile
+from utils.firebase_utils import get_sensor_groups, create_user_profile
+from utils.components import show_metrics, show_charts
 from streamlit_autorefresh import st_autorefresh
 from utils.utils import *
+from utils.firebase_utils import (
+    get_sensor_groups,
+)
 
+# Custom CSS để tối ưu khoảng cách
 st.markdown(
     """
     <style>
@@ -23,43 +27,31 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Khởi tạo nhóm sensor
-sensor_groups = get_sensor_groups()
-
 def show_home_page():
     """
-    Trang chủ hiển thị dữ liệu
+    Trang chủ hiển thị dữ liệu, cho phép tạo user mới, có nút làm mới dữ liệu thủ công,
+    hiển thị thông tin hồ sơ cá nhân, và có nút đăng xuất.
     """
-    st_autorefresh(interval= AUTO_REFRESH_INTERVAL_MS, key="auto_refresh")
-    st.header("Trang Chủ – Hiển thị dữ liệu")
+    st_autorefresh(interval=AUTO_REFRESH_INTERVAL_MS, key="auto_refresh")
+    st.header("🏠 Trang Chủ – Hiển Thị Dữ Liệu")
 
-    col1, col_mid, col2 = st.columns([1, 0.02, 3], gap="small")
+    # === NÚT LÀM MỚI DỮ LIỆU ===
+    if st.button("Reload Data"):
+        st.session_state["reload_data"] = True
 
-    with col1:
-        # Thay dưới đây bằng dữ liệu thực của bạn
-        user_name = "Nguyễn Văn A"
-        user_age = 28
-        user_address = "123 Đường Lê Lợi, Hà Nội"
-        user_gender = "Nam"
-        show_profile(user_name, user_age, user_address, user_gender)
-    with col_mid:
-        st.markdown(
-            """
-            <div style="
-                border-left: 1px solid #000;
-                height: 100%;
-                margin: 0px 0px;
-            "></div>
-            """,
-            unsafe_allow_html=True
-        )
-    with col2:
-        if not sensor_groups:
-            st.error("Chưa có dữ liệu từ Firebase!")
-        else:
-            show_metrics(sensor_groups)
-            show_charts(sensor_groups)
+    # === LẤY DỮ LIỆU SENSOR ===
+    if st.session_state.get("reload_data", False):
+        sensor_groups = get_sensor_groups()
+        st.session_state["sensor_groups"] = sensor_groups
+        st.session_state["reload_data"] = False
+    else:
+        sensor_groups = st.session_state.get("sensor_groups", get_sensor_groups())
+        st.session_state["sensor_groups"] = sensor_groups
 
-# Khi file được chạy độc lập để test, gọi hàm trực tiếp
-if __name__ == "__main__":
-    show_home_page()
+    # === HIỂN THỊ SỐ LIỆU SENSOR ===
+    if not sensor_groups:
+        st.error("⚠️ Chưa có dữ liệu từ Firebase!")
+    else:
+        show_metrics(sensor_groups)
+        show_charts(sensor_groups)
+

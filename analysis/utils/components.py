@@ -92,7 +92,7 @@ def show_metrics(sensor_groups):
                 if confidence_text:
                     st.markdown(
                         f"<div style='font-size: 14px; color: {color};'>"
-                        f"🩺 <strong>Trạng thái:</strong> {status} &nbsp;<br/>"
+                        f"🩺 <strong>Trạng thái:</strong> {status} &nbsp;"
                         f"<strong>Độ tin cậy: </strong>{confidence_text}"
                         f"</div>",
                         unsafe_allow_html=True
@@ -126,30 +126,3 @@ def show_charts(sensor_groups):
             st.altair_chart(chart, use_container_width=True)
 
             st.divider()
-
-import streamlit as st
-
-# ... (các import và hàm hiện có)
-
-def show_profile(name: str, age: int, address: str, gender: str):
-    """
-    Hiển thị Thông Tin Hồ Sơ Cá Nhân: Tên, Tuổi, Địa chỉ, Giới tính.
-    """
-    st.markdown("### Hồ Sơ Cá Nhân")
-    # Dùng container để có thể căn chỉnh nếu cần
-    with st.container():
-        # Tạo hai cột: bên trái là label, bên phải là giá trị
-        col1, col2 = st.columns([1, 3])
-        with col1:
-            st.markdown("**Tên:**")
-            st.markdown("**Tuổi:**")
-            st.markdown("**Địa chỉ:**")
-            st.markdown("**Giới tính:**")
-        with col2:
-            st.markdown(f"{name}")
-            st.markdown(f"{age}")
-            st.markdown(f"{address}")
-            st.markdown(f"{gender}")
-
-    st.divider()
-

@@ -6,7 +6,7 @@ from utils.firebase_utils import get_sensor_groups
 from model.data_processing.bpm_analyse import analyze_bpm_window
 from model.data_processing.spo2_analyse import analyze_spo2_window
 from model.data_processing.ecg_analyse import analyze_ecg_window
-from model.analyse import process_signal, evaluate_health
+from model.analyse import process_signal
 from utils.components import show_charts
 
 def show_analysis_page():
