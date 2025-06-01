@@ -43,12 +43,12 @@ def init_firebase(force_reinit=False):
     Chỉ sử dụng print để debug, không dùng Streamlit.
     """
 
-    # Nếu đã có app và không cần reinit, bỏ qua
+    # 1) Nếu đã có app và không cần reinit, bỏ qua
     if firebase_admin._apps and not force_reinit:
         print("DEBUG: Firebase đã được khởi rồi, bỏ qua init.")
         return
 
-    # Nếu đã có app nhưng cần reinit, xóa hết
+    # 2) Nếu đã có app nhưng cần reinit, xóa hết
     if firebase_admin._apps and force_reinit:
         print("DEBUG: Xóa app cũ để re-init Firebase...")
         for name, app in list(firebase_admin._apps.items()):
@@ -58,42 +58,22 @@ def init_firebase(force_reinit=False):
             except Exception as e:
                 print(f"⚠️ Không thể xóa app '{name}': {e}")
 
-    # Xác định đường dẫn tới file JSON
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    cred_filename = "esp32-9c871-firebase-adminsdk-fbsvc-ec6b1a3d27.json"
-    cred_path = os.path.normpath(os.path.join(BASE_DIR, cred_filename))
-
-    # Kiểm tra tồn tại file
-    if not os.path.isfile(cred_path):
-        print(f"❌ Không tìm thấy file credential JSON tại: {cred_path}")
-        raise FileNotFoundError(f"Credential JSON không tồn tại: {cred_path}")
-
-    # Đọc raw JSON để debug (chỉ in 200 ký tự đầu)
+    # 3) Thay vì đọc file, parse trực tiếp chuỗi JSON trong FIREBASE_CREDENTIALS
     try:
-        with open(cred_path, "r", encoding="utf-8") as f:
-            raw_json = f.read()
+        config = json.loads(FIREBASE_CREDENTIALS)
     except Exception as e:
-        print(f"🔴 Lỗi khi đọc file JSON: {e}")
+        print(f"🔴 Lỗi khi json.loads chuỗi FIREBASE_CREDENTIALS: {e}")
         raise
 
-    snippet = raw_json[:200].replace("\n", "\\n")
-    print(f"DEBUG: 200 ký tự đầu của JSON: {snippet} …")
-
-    # Parse JSON thử
-    try:
-        config = json.loads(raw_json)
-    except Exception as e:
-        print(f"🔴 Lỗi khi json.loads: {e}")
-        raise
-
-    # In ra các key để kiểm tra
-    if isinstance(config, dict):
-        print(f"DEBUG: Các key trong config JSON: {list(config.keys())}")
-    else:
-        print(f"🔴 Nội dung credential không phải dict mà là {type(config)}")
+    # 4) Kiểm tra cấu trúc dict
+    if not isinstance(config, dict):
+        print(f"🔴 Nội dung FIREBASE_CREDENTIALS không phải dict mà là {type(config)}")
         raise TypeError("Credential JSON không phải dict")
 
-    # Khởi tạo Firebase Admin SDK
+    # 5) (Debug) In ra các key để chắc chắn parse đúng
+    print(f"DEBUG: Các key trong config JSON: {list(config.keys())}")
+
+    # 6) Khởi tạo Firebase Admin SDK từ dict đã parse
     try:
         cred = credentials.Certificate(config)
         firebase_admin.initialize_app(cred, {
