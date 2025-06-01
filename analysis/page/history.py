@@ -17,7 +17,7 @@ def show_history_page():
         st.warning("⚠️ Không có dữ liệu lịch sử từ Firebase.")
         return
 
-    # Giao diện chọn thời gian và cảm biến
+    # Giao diện chọn  và cảm biến
     col1, col2 = st.columns(2)
     with col1:
         start = st.date_input("📅 Từ ngày")
@@ -32,7 +32,7 @@ def show_history_page():
             df_range = df.loc[str(start):str(end)].reset_index()
 
             if df_range.empty:
-                st.info(f"Không có dữ liệu cho {sensor} trong khoảng thời gian đã chọn.")
+                st.info(f"Không có dữ liệu cho {sensor} trong khoảng  đã chọn.")
                 continue
 
             st.subheader(f"📊 {sensor}")

@@ -18,7 +18,12 @@ def map_vietnamese_to_english(text):
         "Suy hô hấp nặng (SpO2 < 90%)": "Severe respiratory failure (SpO2 < 90%)",
         "Suy hô hấp nhẹ (90% ≤ SpO2 < 95%)": "Mild respiratory failure (90% ≤ SpO2 < 95%)",
         "SpO2 bình thường (≥ 95%)": "Normal SpO2 (≥ 95%)",
-        "Không có dữ liệu SpO2": "No SpO2 data"
+        "Không có dữ liệu SpO2": "No SpO2 data",
+        "N": "Nhịp tim bình thường(N)",
+        "S": "Nhịp trên thất ngoại tâm thu(S)",
+        "V": "Nhịp thất ngoại tâm thu(V)",
+        "F": "Nhịp hợp tử(F)",
+        "Q": "Nhịp không xác định(Q)"
     }
     return mapping.get(text, text)
 

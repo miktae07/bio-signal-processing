@@ -183,7 +183,7 @@ streamlit run main.py
 1. **Dashboard:**
 
    * Chọn sensor cần xem.
-   * Biểu đồ thời gian, dữ liệu thô, trạng thái (🟢/🔴).
+   * Biểu đồ , dữ liệu thô, trạng thái (🟢/🔴).
 2. **Phân tích:**
 
    * Nhập số bản ghi cuối `n`, click **Chạy phân tích**.
