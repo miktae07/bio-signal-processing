@@ -7,6 +7,7 @@ import firebase_admin
 from firebase_admin import credentials, db
 import os
 from google.auth.exceptions import RefreshError
+import streamlit as st
 
 def parse_node(sensor, node, path_keys):
     records = []
@@ -38,6 +39,7 @@ def parse_node(sensor, node, path_keys):
     return records
 
 def init_firebase(force_reinit=False):
+    FIREBASE_CREDENTIALS = st.secrets["FIREBASE_CREDENTIALS"]
     """
     Khởi tạo Firebase Admin SDK. Nếu force_reinit=True, xóa app cũ rồi init lại.
     Chỉ sử dụng print để debug, không dùng Streamlit.
