@@ -5,6 +5,7 @@ from datetime import timedelta
 from model.data_processing.bpm_analyse import analyze_bpm_window
 from model.data_processing.spo2_analyse import analyze_spo2_window
 from model.data_processing.ecg_analyse import analyze_ecg_window
+from model.data_processing.temp_analyse import analyze_temp_window
 
 def get_unit(sensor):
     """Trả về đơn vị của cảm biến nếu có"""
@@ -14,6 +15,8 @@ def get_unit(sensor):
         return "%"
     elif sensor.upper() == "EEG":
         return "µV"
+    elif sensor.upper() == "TEMP":
+        return "°C"
     else:
         return ""
     
@@ -62,7 +65,7 @@ def show_metrics(sensor_groups):
 
                 # 🩺 4. Phân tích trạng thái trên 5 phút dữ liệu cuối
                 end_time = df.index.max()
-                start_time = end_time - timedelta(minutes=5)
+                start_time = end_time - timedelta(minutes=3)
                 window_df = df[(df.index >= start_time) & (df.index <= end_time)]
 
                 status = "Không xác định"
@@ -80,6 +83,9 @@ def show_metrics(sensor_groups):
                         status = class_name
                         confidence_pct = confidence * 100
                         confidence_text = f"{confidence_pct:.1f}%"
+                    elif "TEMP" in sensor.upper():
+                        _, temp_status = analyze_temp_window(window_df, start_time, end_time)
+                        status = temp_status
                     else:
                         status = "Không xác định"
                         confidence_text = ""

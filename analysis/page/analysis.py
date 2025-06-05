@@ -6,6 +6,7 @@ from utils.firebase_utils import get_sensor_groups
 from model.data_processing.bpm_analyse import analyze_bpm_window
 from model.data_processing.spo2_analyse import analyze_spo2_window
 from model.data_processing.ecg_analyse import analyze_ecg_window
+from model.data_processing.temp_analyse import analyze_temp_window
 from model.analyse import process_signal
 from utils.components import show_charts
 
@@ -114,6 +115,18 @@ def show_analysis_page():
                     display_name='ECG',
                     analyze_fn=analyze_ecg_window,
                     unit_str='μV',
+                    sensor_groups=sensor_groups,
+                    start_dt=start_dt,
+                    end_dt=end_dt,
+                    export_data=export_data,
+                    summary_rows=summary_rows
+                )
+            elif sig == 'Temp':
+                process_signal(
+                    key_in_groups=key,
+                    display_name='Temp',
+                    analyze_fn=analyze_temp_window,
+                    unit_str='°C',
                     sensor_groups=sensor_groups,
                     start_dt=start_dt,
                     end_dt=end_dt,
