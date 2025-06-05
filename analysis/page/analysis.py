@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime, time
-from utils.utils import map_vietnamese_to_english
+from utils.utils import map_lang
 from utils.firebase_utils import get_sensor_groups
 from model.data_processing.bpm_analyse import analyze_bpm_window
 from model.data_processing.spo2_analyse import analyze_spo2_window

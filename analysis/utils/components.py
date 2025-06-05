@@ -6,6 +6,7 @@ from model.data_processing.bpm_analyse import analyze_bpm_window
 from model.data_processing.spo2_analyse import analyze_spo2_window
 from model.data_processing.ecg_analyse import analyze_ecg_window
 from model.data_processing.temp_analyse import analyze_temp_window
+from utils.utils import map_lang
 
 def get_unit(sensor):
     """Trả về đơn vị của cảm biến nếu có"""
@@ -51,7 +52,8 @@ def show_metrics(sensor_groups):
                 timestamp = df.index[-1]
                 unit = get_unit(sensor)
                 icon = get_sensor_icon(sensor)
-                display_label = f"{icon} {sensor}"
+                sensor_name = map_lang(sensor)
+                display_label = f"{icon} {sensor_name}"
                 display_value = f"{value:.2f} {unit}" if unit else f"{value:.2f}"
 
                 # 🟩 2. Hiển thị số liệu
@@ -116,7 +118,8 @@ def show_charts(sensor_groups):
     for sensor, df in sensor_groups.items():
         with st.container():
             sensor_icon = get_sensor_icon(sensor)
-            st.markdown(f"### {sensor_icon} {sensor}")
+            sensor_name = map_lang(sensor)
+            st.markdown(f"### {sensor_icon} {sensor_name}")
 
             # Giới hạn trục Y ±1
             vmin = df['value'].min() - 1

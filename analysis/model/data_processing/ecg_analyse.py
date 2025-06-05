@@ -207,7 +207,7 @@ def analyze_ecg_window(
     _, confidence, class_name = predict_single_beat(ecg_array, sampling_rate=400)
     print(f"Predicted class: {class_name}")
     print (f"Confidence: {confidence}")
-    class_name = map_vietnamese_to_english(class_name)
+    class_name = map_lang(class_name)
 
     return stats, class_name, confidence
 

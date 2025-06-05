@@ -2,7 +2,7 @@ import pandas as pd
 from datetime import datetime
 from typing import Union, Dict, Tuple
 import streamlit as st
-from utils.utils import map_vietnamese_to_english
+from utils.utils import map_lang
 
 def process_signal(
     key_in_groups: str,
@@ -47,7 +47,7 @@ def process_signal(
         stats, status_vn, confidence = analyze_fn(df, start_dt, end_dt)
     else:
         stats, status_vn = analyze_fn(df, start_dt, end_dt)
-    status_en = map_vietnamese_to_english(status_vn)
+    status_en = map_lang(status_vn)
 
     # 5. In kết quả lên Streamlit
     st.subheader(f"Kết quả phân tích {display_name}")

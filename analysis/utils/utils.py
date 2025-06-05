@@ -9,7 +9,7 @@ LOG_PATH = "./logs"
 
 # utils.py
 
-def map_vietnamese_to_english(text):
+def map_lang(text):
     mapping = {
         "Nhịp tim chậm (Bradycardia)": "Bradycardia (Slow heart rate)",
         "Nhịp tim bình thường": "Normal heart rate",
@@ -23,7 +23,11 @@ def map_vietnamese_to_english(text):
         "S": "Nhịp trên thất ngoại tâm thu(S)",
         "V": "Nhịp thất ngoại tâm thu(V)",
         "F": "Nhịp hợp tử(F)",
-        "Q": "Nhịp không xác định(Q)"
+        "Q": "Nhịp không xác định(Q)",
+        "BPM": "Nhịp tim(BPM)",
+        "ECG": "Điện tim(ECG)",
+        "SpO2" : "Nồng độ Oxy trong máu(SpO2)",
+        "Temp" : "Nhiệt độ cơ thể"
     }
     return mapping.get(text, text)
 

@@ -9,3 +9,4 @@ opencv-python-headless
 streamlit-autorefresh
 ultralytics
 tensorflow
+sendgrid
