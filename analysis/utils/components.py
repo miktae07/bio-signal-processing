@@ -67,7 +67,7 @@ def show_metrics(sensor_groups):
 
                 # 🩺 4. Phân tích trạng thái trên 5 phút dữ liệu cuối
                 end_time = df.index.max()
-                start_time = end_time - timedelta(minutes=3)
+                start_time = end_time - timedelta(minutes=0)
                 window_df = df[(df.index >= start_time) & (df.index <= end_time)]
 
                 status = "Không xác định"

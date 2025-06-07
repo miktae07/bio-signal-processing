@@ -12,10 +12,14 @@ def analyze_spo2_window(
       status: str mô tả tình trạng SpO2
     """
     window = filter_by_time(df_spo2, start, end)['value']
+    if len(window) == 0:
+        return {}, "Không có dữ liệu SpO2"
+    print ("DEBUG- window SpO2", window)
     stats = compute_window_stats(window)
     mean = stats['mean']
     #https://my.clevelandclinic.org/health/diagnostics/22447-blood-oxygen-level
     #https://www.vinmec.com/vie/bai-viet/chi-so-spo2-o-nguoi-binh-thuong-la-bao-nhieu-vi
+    print("DEBUG- mean SpO2", mean)
 
     if pd.isna(mean):
         status = "Không có dữ liệu SpO2"
