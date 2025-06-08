@@ -1,57 +1,66 @@
 import streamlit as st
-from utils.firebase_utils import get_sensor_groups, create_user_profile
+from utils.firebase_utils import get_sensor_groups
+from utils.update_data import start_sensor_listener
+from utils.utils import AUTO_REFRESH_INTERVAL_MS
 from utils.components import show_metrics, show_charts
-from streamlit_autorefresh import st_autorefresh
-from utils.utils import *
-from utils.firebase_utils import (
-    get_sensor_groups,
-)
+import pandas as pd
 
-# Custom CSS để tối ưu khoảng cách
-st.markdown(
-    """
-    <style>
-        .block-container {
-            margin-top: 0rem !important;
-            padding-top: 0rem !important;
-        }
-        .css-18e3th9 {
-            padding-top: 0rem !important;
-            margin-top: 0rem !important;
-        }
-        header {
-            margin-bottom: 0rem !important;
-        }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+def load_sensor_groups():
+    return get_sensor_groups()
+
+def update_ui_on_change(sensor, df):
+    print(f"🔄 Đã cập nhật từ cảm biến: {sensor}")
+    print(df.tail(1))
+
+    if df.index.dtype != 'datetime64[ns]':
+        df.index = pd.to_datetime(df.index)
+
+    if 'sensor_groups' not in st.session_state:
+        st.session_state['sensor_groups'] = {}
+
+    st.session_state['sensor_groups'][sensor] = df
+
+    print("✅ Session state sau cập nhật:")
+    print(st.session_state['sensor_groups'][sensor].tail())
+
+    st.session_state["need_rerun"] = True
+    print("[update_ui_on_change] ➕ Ghi buffer và set need_rerun = True")
+
 
 def show_home_page():
-    """
-    Trang chủ hiển thị dữ liệu, cho phép tạo user mới, có nút làm mới dữ liệu thủ công,
-    hiển thị thông tin hồ sơ cá nhân, và có nút đăng xuất.
-    """
-    st_autorefresh(interval=AUTO_REFRESH_INTERVAL_MS, key="auto_refresh")
+    if st.session_state.get("need_rerun"):
+        print("[show_home_page] 🔄 Có cờ need_rerun = True → sẽ cập nhật giao diện")
+        st.session_state["need_rerun"] = False
+        st.rerun()
+        sensor_groups = st.session_state.get('sensor_groups', {})
+        if not sensor_groups:
+            st.error("⚠️ Chưa có dữ liệu từ Firebase!")
+        else:
+            # Hiển thị các chỉ số và biểu đồ
+            show_metrics(sensor_groups)
+            show_charts(sensor_groups)
+
     st.header("🏠 Trang Chủ – Hiển Thị Dữ Liệu")
 
-    # === NÚT LÀM MỚI DỮ LIỆU ===
+    # Lấy snapshot ban đầu
+    st.session_state['sensor_groups'] = get_sensor_groups()
+    # Bắt listener
+    st.session_state['fb_listener'] = start_sensor_listener(
+        on_change=update_ui_on_change,
+        debug=True
+    )
+    
+    # 2) Nút reload dữ liệu thủ công
     if st.button("Reload Data"):
-        st.session_state["reload_data"] = True
-
-    # === LẤY DỮ LIỆU SENSOR ===
-    if st.session_state.get("reload_data", False):
-        sensor_groups = get_sensor_groups()
-        st.session_state["sensor_groups"] = sensor_groups
-        st.session_state["reload_data"] = False
-    else:
-        sensor_groups = st.session_state.get("sensor_groups", get_sensor_groups())
-        st.session_state["sensor_groups"] = sensor_groups
-
-    # === HIỂN THỊ SỐ LIỆU SENSOR ===
+        st.session_state['sensor_groups'] = get_sensor_groups()
+        st.rerun()
+    
+    sensor_groups = st.session_state.get('sensor_groups', {})
     if not sensor_groups:
         st.error("⚠️ Chưa có dữ liệu từ Firebase!")
     else:
+        # Hiển thị các chỉ số và biểu đồ
         show_metrics(sensor_groups)
         show_charts(sensor_groups)
 
+show_home_page()

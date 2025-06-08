@@ -1,7 +1,7 @@
 import os
 
 # Khoảng refresh trang
-AUTO_REFRESH_INTERVAL_MS = 10_000  # 10 giây
+AUTO_REFRESH_INTERVAL_MS = 600000_000  # 10 giây
 
 # Đường dẫn hoặc cấu hình khác tùy dự án
 DATA_PATH = "./data"
@@ -44,3 +44,4 @@ def get_model_path(filename="best_unet_resnet18_model.keras"):
     if not os.path.exists(path):
         raise FileNotFoundError(f"Không tìm thấy model tại: {path}")
     return path
+

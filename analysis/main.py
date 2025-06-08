@@ -17,6 +17,15 @@ from page.user import show_user_page
 from utils.firebase_utils import list_all_users, get_user_profile
 
 def main():
+    if st.session_state.get("need_rerun", False):
+        print("[main] 🔁 Đang rerun vì có update từ Firebase")
+        st.session_state["need_rerun"] = False
+        # if "sensor_groups" not in st.session_state:
+        #     st.session_state["sensor_groups"] = {}
+        # for sensor, df in st.session_state.get("sensor_groups_buffer", {}).items():
+        #     st.session_state["sensor_groups"][sensor] = df
+        # st.session_state["sensor_groups_buffer"] = {}
+
     # 1. Lấy danh sách user từ Firebase (hoặc định nghĩa sẵn)
     user_ids = list_all_users() if "user_ids" not in st.session_state else st.session_state["user_ids"]
     st.session_state["user_ids"] = user_ids
