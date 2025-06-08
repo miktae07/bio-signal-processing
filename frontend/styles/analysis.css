@@ -1,0 +1,61 @@
+/* Trong file history.css, thay thế hoặc thêm vào phần #sensorSelect */
+#sensorSelect, #signalSelect {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    padding: 0.6rem;
+    width: 100%;
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+    /* min-height: 120px; */
+    overflow-y: auto;
+    appearance: none;
+    color: #6b7280; /* Màu placeholder */
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+#sensorSelect:focus, #signalSelect:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    color: #1f293b; /* Màu văn bản khi focus */
+}
+
+#sensorSelect option, #signalSelect option {
+    font-family: 'Inter', sans-serif;
+    background-color: #ffffff;
+    color: #1f293b;
+}
+
+#sensorSelect:invalid, #signalSelect:invalid {
+    border-color: #ef4444; /* Viền đỏ khi không hợp lệ */
+    background-color: #fef2f2; /* Nền đỏ nhạt */
+    color: #6b7280; /* Giữ màu placeholder */
+}
+
+#sensorSelect:invalid:focus, #signalSelect:invalid:focus {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.chartjs-render-monitor {
+    --chart-line-color: #3b82f6; /* Màu xanh dương cho line chart */
+}
+
+/* Trong file history.css, thêm hoặc cập nhật phần sau */
+input[type="time"] {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 0.6rem;
+    width: 100%;
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="time"]:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}

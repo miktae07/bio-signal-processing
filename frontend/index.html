@@ -3,252 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng Điều Khiển Cảm Biến Theo Thời Gian Thực</title>
+    <link href="./styles/app.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <!-- Chart.bundle includes all controllers and scales -->
-    <!-- Firebase Compat Libraries for Global Namespace -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-    <!-- TailwindCSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Moment.js -->
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
-    <title>Bảng Điều Khiển Cảm Biến Theo Thời Gian Thực (Debug)</title>
 </head>
 <body class="min-h-screen bg-gray-100">
-    <div class="container mx-auto p-4">
-        <h1 class="text-3xl font-bold mb-4">🏠 Trang Chủ – Hiển Thị Dữ Liệu (Debug Mode)</h1>
-        <div id="error" class="text-red-600 hidden"></div>
-        <h2 class="text-2xl font-semibold mt-6 mb-4">📊 Dữ liệu Hiện Tại</h2>
-        <div id="metrics" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    <!-- Sidebar -->
+    <aside class="fixed top-0 left-0 w-64 h-full bg-gray-800 text-white p-4">
+        <h2 id="greeting" class="text-xl font-bold mb-4"></h2>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="block p-2 rounded bg-gray-600">🏠 Trang Chủ</a></li>
+                <li><a href="analysis.html" class="block p-2 rounded hover:bg-gray-700">📊 Phân Tích</a></li>
+                <li><a href="history.html" class="block p-2 rounded hover:bg-gray-700">🕒 Lịch sử</a></li>
+                <li><a href="image.html" class="block p-2 rounded hover:bg-gray-700">📷 Phân tích ảnh</a></li>
+                <li><a href="#" class="block p-2 rounded hover:bg-gray-700">👤 Người Dùng</a></li>
+            </ul>
+        </nav>
         <hr class="my-6">
-        <h2 class="text-2xl font-semibold mb-4">📈 Biểu Đồ Biến Thiên</h2>
-        <div id="charts"></div>
-    </div>
-    <script>
-        // Firebase Configuration (Debug)
-        const firebaseConfig = {
-            apiKey: "AIzaSyDneFPslsW4O0-3TGLV5yAWFvGaRbdttuY",
-            authDomain: "esp32-9c871.firebaseapp.com",
-            databaseURL: "https://esp32-9c871-default-rtdb.firebaseio.com",
-            projectId: "esp32-9c871",
-            storageBucket: "esp32-9c871.firebasestorage.app",
-            messagingSenderId: "321309512205",
-            appId: "1:321309512205:web:e5e5f809b56b0ac125bb44",
-            measurementId: "G-7RY1158KD2"
-        };
+        <div class="mb-4">
+            <label for="userSelect" class="block text-sm font-medium">👤 Chọn Người Dùng</label>
+            <select id="userSelect" class="w-full bg-gray-700 text-white border rounded p-2">
+                <option value="user1">user1</option>
+                <option value="user2">user2</option>
+                <option value="user3">user3</option>
+            </select>
+        </div>
+        <div class="mb-4">
+            <p><strong>Tên:</strong> <span id="userName">Nguyễn Văn A</span></p>
+            <p><strong>Tuổi:</strong> <span id="userAge">30</span></p>
+            <p><strong>Địa chỉ:</strong> <span id="userAddress">123 Đường ABC, Quận XYZ, Thành phố ABC</span></p>
+            <p><strong>Giới tính:</strong> <span id="userGender">Nam</span></p>
+        </div>
+    </aside>
 
-        // Khởi tạo Firebase (compat)
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        // Backend URL (DEBUG: bỏ để tránh lỗi nếu chưa có server)
-        const BACKEND_URL = null; // đặt thành "http://localhost:8000" khi cần
-
-        // Utils
-        function mapLang(text) {
-            const mapping = {
-                "Nhịp tim chậm (Bradycardia)": "Bradycardia (Slow heart rate)",
-                "Nhịp tim bình thường": "Normal heart rate",
-                "Nhịp tim nhanh (Tachycardia)": "Tachycardia (Fast heart rate)",
-                "Không có dữ liệu BPM": "No BPM data",
-                "Suy hô hấp nặng (SpO2 < 90%)": "Severe respiratory failure (SpO2 < 90%)",
-                "Suy hô hấp nhẹ (90% ≤ SpO2 < 95%)": "Mild respiratory failure (90% ≤ SpO2 < 95%)",
-                "SpO2 bình thường (≥ 95%)": "Normal SpO2 (≥ 95%)",
-                "Không có dữ liệu SpO2": "No SpO2 data",
-                "N": "Nhịp tim bình thường(N)",
-                "S": "Nhịp trên thất ngoại tâm thu(S)",
-                "V": "Nhịp thất ngoại tâm thu(V)",
-                "F": "Nhịp hợp tử(F)",
-                "Q": "Nhịp không xác định(Q)",
-                "BPM": "Nhịp tim(BPM)",
-                "ECG": "Điện tim(ECG)",
-                "SpO2": "Nồng độ Oxy trong máu(SpO2)",
-                "Temp": "Nhiệt độ cơ thể"
-            };
-            return mapping[text] || text;
-        }
-        function getUnit(sensor) {
-            sensor = sensor.toUpperCase();
-            if (sensor === "BPM") return "bpm";
-            if (sensor === "SPO2") return "%";
-            if (sensor === "ECG" || sensor === "EEG") return "µV";
-            if (sensor === "TEMP") return "°C";
-            return "";
-        }
-        function getSensorIcon(sensor) {
-            sensor = sensor.toUpperCase();
-            if (sensor.includes("BPM") || sensor.includes("HEART")) return "❤️";
-            if (sensor.includes("SPO2") || sensor.includes("OXY")) return "🫁";
-            if (sensor.includes("ECG")) return "🫀";
-            if (sensor.includes("TEMP") || sensor.includes("NHIỆT")) return "🌡️";
-            return "🔧";
-        }
-
-        // Debug parseNode (giữ)
-        function parseNode(sensor, node, pathKeys) {
-            console.debug(`[parseNode] sensor=${sensor}, pathKeys=${JSON.stringify(pathKeys)}`);
-            let records = [];
-            if (node && typeof node === 'object') {
-                for (const [key, value] of Object.entries(node)) {
-                    records = records.concat(parseNode(sensor, value, [...pathKeys, key]));
-                }
-            } else {
-                try {
-                    let ts;
-                    if (pathKeys.length >= 6) {
-                        ts = `${pathKeys[0]}-${pathKeys[1].padStart(2, '0')}-${pathKeys[2].padStart(2, '0')} ` +
-                             `${pathKeys[3].padStart(2, '0')}:${pathKeys[4].padStart(2, '0')}:${pathKeys[5].padStart(2, '0')}`;
-                    } else {
-                        console.warn(`[parseNode] pathKeys ngắn, dùng hiện tại:`, pathKeys);
-                        ts = moment().toISOString();
-                    }
-                    const baseTime = moment(ts);
-                    if (sensor === 'ECG') {
-                        const vals = String(node).match(/-?\d+/g)?.map(Number) || [];
-                        vals.forEach((val, i) => {
-                            records.push({ sensor, time: baseTime.clone().add(i * 4, 'ms').toISOString(), value: val });
-                        });
-                    } else {
-                        const val = isNaN(parseFloat(node)) ? node : parseFloat(node);
-                        records.push({ sensor, time: baseTime.toISOString(), value: val });
-                    }
-                } catch (e) {
-                    console.error(`[parseNode] lỗi parse sensor=${sensor}, pathKeys=${pathKeys}:`, e);
-                }
-            }
-            return records;
-        }
-
-        // Lấy và debug dữ liệu
-        async function getSensorGroups() {
-            try {
-                const snapshot = await database.ref('/').once('value');
-                const data = snapshot.val();
-                console.log('[getSensorGroups] raw:', data);
-                if (!data || typeof data !== 'object') return {};
-                let all = [];
-                for (const [sensor, node] of Object.entries(data)) {
-                    const recs = parseNode(sensor, node, []);
-                    console.log(`[parsed ${sensor}]`, recs);
-                    all = all.concat(recs);
-                }
-                if (!all.length) return {};
-                const grouped = all.reduce((acc, r) => {
-                    acc[r.sensor] = acc[r.sensor] || [];
-                    acc[r.sensor].push(r);
-                    return acc;
-                }, {});
-                Object.values(grouped).forEach(arr => arr.sort((a,b) => new Date(a.time) - new Date(b.time)));
-                console.log('[getSensorGroups] grouped keys:', Object.keys(grouped));
-                return grouped;
-            } catch (e) {
-                console.error('[getSensorGroups] lỗi:', e);
-                return {};
-            }
-        }
-
-        // Render functions có debug + hiển thị
-        async function renderMetrics(sensorGroups) {
-            console.log('[renderMetrics]', sensorGroups);
-            const metricsDiv = document.getElementById('metrics');
-            metricsDiv.innerHTML = '';
-            for (const [sensor, data] of Object.entries(sensorGroups)) {
-                if (!data.length) continue;
-                const latest = data[data.length - 1];
-                const value = latest.value;
-                const timestamp = moment(latest.time).format('DD-MM-YYYY HH:mm:ss');
-                const unit = getUnit(sensor);
-                const icon = getSensorIcon(sensor);
-                const sensorName = mapLang(sensor);
-                const displayValue = unit ? `${value.toFixed(2)} ${unit}` : value;
-                const card = `
-                    <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200">
-                        <h3 class="text-lg font-semibold">${icon} ${sensorName}</h3>
-                        <p class="text-2xl font-bold">${displayValue}</p>
-                        <p class="text-sm text-gray-500">🕒 ${timestamp}</p>
-                    </div>
-                `;
-                metricsDiv.innerHTML += card;
-            }
-        }
-
-        function renderCharts(sensorGroups) {
-    console.log('[renderCharts]', sensorGroups);
-    const chartsDiv = document.getElementById('charts');
-    chartsDiv.innerHTML = '';  // reset 1 lần duy nhất
-
-    for (const [sensor, data] of Object.entries(sensorGroups)) {
-            if (!data.length) continue;
-
-            // 1. Tạo container
-            const container = document.createElement('div');
-            container.className = 'bg-white p-4 rounded-lg shadow-md mt-4';
-
-            // 2. Tạo tiêu đề
-            const title = document.createElement('h3');
-            title.className = 'text-lg font-semibold';
-            title.innerHTML = `${getSensorIcon(sensor)} ${mapLang(sensor)}`;
-            container.appendChild(title);
-
-            // 3. Tạo canvas
-            const canvas = document.createElement('canvas');
-            const canvasId = `chart-${sensor}`;
-            canvas.id = canvasId;
-            container.appendChild(canvas);
-
-            // 4. Thêm vào DOM
-            chartsDiv.appendChild(container);
-
-            // 5. Khởi tạo Chart.js
-            const ctx = canvas.getContext('2d');
-            if (typeof Chart !== 'undefined') {
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: data.map(d => moment(d.time).format('HH:mm:ss')),
-                        datasets: [{
-                            label: mapLang(sensor),
-                            data: data.map(d => d.value),
-                            fill: false
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            x: { title: { display: true, text: 'Thời điểm' } }
-                        }
-                    }
-                });
-            } else {
-                console.error('Chart.js chưa được load!');
-            }
-        }
-    }
-
-
-        async function loadData() {
-            console.log('--- loadData start ---');
-            const groups = await getSensorGroups();
-            console.log('[loadData] groups:', groups);
-            const err = document.getElementById('error');
-            if (!Object.keys(groups).length) {
-                err.textContent = '⚠️ Chưa có dữ liệu từ Firebase!';
-                err.classList.remove('hidden');
-            } else {
-                err.classList.add('hidden');
-                console.log('--- renderMetrics start ---');
-                await renderMetrics(groups);
-                renderCharts(groups);
-            }
-            console.log('--- loadData end ---');
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOMContentLoaded');
-            loadData();
-            database.ref('/').on('value', () => { console.log('Firebase updated'); loadData(); });
-            document.getElementById('reloadBtn').addEventListener('click', loadData);
-        });
-    </script>
+    <!-- Main Content -->
+    <main class="ml-64 p-4">
+        <div class="container mx-auto">
+            <h1 class="text-3xl font-bold mb-4">🏠 Trang Chủ – Hiển Thị Dữ Liệu</h1>
+            <div id="error" class="text-red-600 hidden"></div>
+            <h2 class="text-2xl font-semibold mt-6 mb-4">📊 Dữ liệu Hiện Tại</h2>
+            <div id="metrics" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            <hr class="my-6">
+            <h2 class="text-2xl font-semibold mb-4">📈 Biểu Đồ Biến Thiên</h2>
+            <div id="charts"></div>
+        </div>
+    </main>
+    <!-- Scripts -->
+    <script src="./scripts/firebase_utils.js"></script>
+    <script src="./scripts/utils.js"></script>
+    <script src="./scripts/render.js"></script>
+    <script src="./scripts/main.js"></script>
 </body>
 </html>
