@@ -10,3 +10,5 @@ streamlit-autorefresh
 ultralytics
 tensorflow
 sendgrid
+flask
+flask-cors

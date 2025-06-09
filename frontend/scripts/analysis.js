@@ -5,10 +5,12 @@ import analyzeTemp from './data_processing/analyzeTemp.js';
 
 console.log('analysis.js loaded');
 
-console.log(analyzeBPM(55)); // Output: Bradycardia
-console.log(analyzeSpO2(92)); // Output: Mild respiratory failure
-console.log(analyzeECG(120)); // Output: Abnormal
-console.log(analyzeTemp(35)); // Output: Hypothermia
+// console.log(analyzeBPM(55)); // Output: Bradycardia
+// console.log(analyzeSpO2(92)); // Output: Mild respiratory failure
+// const ecgArray = [120, 125, 130, 128, 132, 129]; // 👈 Mảng giá trị
+// const result = await analyzeECG(ecgArray);
+// console.log(result); // Output: Kết quả phân tích ECG
+// console.log(analyzeTemp(35)); // Output: Hypothermia
 
 // Populate time options (every 5 minutes)
 function populateTimeOptions() {
@@ -71,38 +73,54 @@ async function populateSignalSelect() {
 }
 
 // Process signal data
-function processSignal(sensor, data, start, end) {
+async function processSignal(sensor, data, start, end) {
     const filteredData = data.filter(d => {
         const time = moment(d.time);
         return time.isSameOrAfter(start) && time.isSameOrBefore(end);
     });
+
     const exportData = [];
     const summary = { min: Infinity, max: -Infinity, mean: 0, count: 0 };
 
+    let analysisResult = 'Unknown';
+
+    if (sensor.toUpperCase() === 'ECG') {
+        const ecgValues = filteredData.map(d => d.value);
+        const ecgResponse = await analyzeECG(ecgValues);
+        if (ecgResponse && !ecgResponse.error) {
+            console.log('ECG analysis result:', ecgResponse);
+            analysisResult = mapLang(ecgResponse.class_name); // ví dụ: 'S', 'V', 'N'
+        } else {
+            analysisResult = mapLang('Error');
+        }
+    }
+
     filteredData.forEach(d => {
-        let analysisResult;
+        let result;
         switch (sensor.toUpperCase()) {
             case 'BPM': 
-                analysisResult = mapLang(analyzeBPM(d.value)); 
+                result = mapLang(analyzeBPM(d.value)); 
                 break;
             case 'SPO2': 
-                analysisResult = mapLang(analyzeSpO2(d.value)); 
-                break;
-            case 'ECG': 
-                analysisResult = mapLang(analyzeECG(d.value)); 
+                result = mapLang(analyzeSpO2(d.value)); 
                 break;
             case 'TEMP': 
-                analysisResult = mapLang(analyzeTemp(d.value)); 
+                result = mapLang(analyzeTemp(d.value)); 
+                break;
+            case 'ECG':
+                result = analysisResult; // Gán kết quả đã phân tích 1 lần ở trên
                 break;
             default: 
-                analysisResult = mapLang('Unknown');
+                result = mapLang('Unknown');
         }
+
         exportData.push({
             type: mapLang(sensor) || sensor,
             timestamp: moment(d.time).format('YYYY-MM-DD HH:mm:ss'),
             value: d.value,
-            result: analysisResult
+            result
         });
+
         summary.min = Math.min(summary.min, d.value);
         summary.max = Math.max(summary.max, d.value);
         summary.mean += d.value;
@@ -136,26 +154,44 @@ async function renderAnalysisData() {
     const start = moment.tz(`${startDate} ${startTime}:00`, 'Asia/Ho_Chi_Minh').toISOString();
     const end = moment.tz(`${endDate} ${endTime}:00`, 'Asia/Ho_Chi_Minh').toISOString();
 
+    const analysisContent = document.getElementById('analysisContent');
+    analysisContent.innerHTML = '';
+    document.getElementById('error').classList.add('hidden');
+
+    // Thêm thông báo đang phân tích
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = 'analyzingStatus';
+    loadingDiv.className = 'text-blue-600 font-semibold mb-4';
+    loadingDiv.textContent = '⏳ Đang phân tích dữ liệu...';
+    analysisContent.appendChild(loadingDiv);
+
     try {
         const sensorGroups = await getSensorGroups();
-        const analysisContent = document.getElementById('analysisContent');
-        analysisContent.innerHTML = '';
-        document.getElementById('error').classList.add('hidden');
-
-        if (!sensorGroups || Object.keys(sensorGroups).length === 0) {
-            document.getElementById('error').textContent = '⚠️ Không tìm thấy dữ liệu để phân tích!';
-            document.getElementById('error').classList.remove('hidden');
-            return;
-        }
-
+        console.log('Sensor groups:', sensorGroups);
         const filteredGroups = {};
         const exportData = [];
         const summaryRows = [];
+        let overallResult = null; // Lưu kết quả chung
+        let overallConfidence = null;
 
-        selectedSignals.forEach(sensor => {
+        for (const sensor of selectedSignals) {
             if (sensor in sensorGroups) {
                 const data = sensorGroups[sensor];
-                const { exportData: signalExport, summary } = processSignal(sensor, data, start, end);
+                const { exportData: signalExport, summary } = await processSignal(sensor, data, start, end);
+
+                // Nếu là ECG và có kết quả, lấy class_name và confidence
+                if (sensor.toUpperCase() === 'ECG' && signalExport.length > 0) {
+                    const ecgValues = data.filter(d => {
+                        const time = moment(d.time);
+                        return time.isSameOrAfter(start) && time.isSameOrBefore(end);
+                    }).map(d => d.value);
+                    const ecgResponse = await analyzeECG(ecgValues);
+                    if (ecgResponse && !ecgResponse.error) {
+                        overallResult = ecgResponse.class_name;
+                        overallConfidence = ecgResponse.confidence;
+                    }
+                }
+
                 exportData.push(...signalExport);
                 summaryRows.push({
                     type: mapLang(sensor) || sensor,
@@ -164,12 +200,24 @@ async function renderAnalysisData() {
                     mean: summary.mean.toFixed(2),
                     result: signalExport.length ? signalExport[0].result : 'No data'
                 });
+
                 filteredGroups[sensor] = data.filter(d => {
                     const time = moment(d.time);
                     return time.isSameOrAfter(start) && time.isSameOrBefore(end);
                 });
             }
-        });
+        }
+
+        // Xóa thông báo đang phân tích
+        loadingDiv.remove();
+
+        // Hiển thị kết quả chung ở đầu
+        if (overallResult !== null && overallConfidence !== null) {
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'bg-green-100 text-green-800 p-4 rounded-lg mb-4 text-lg font-semibold flex items-center gap-2';
+            resultDiv.innerHTML = `✅ Kết quả ECG: <span class="font-bold">${mapLang(overallResult) || overallResult}</span> (Độ tin cậy: <span class="font-bold">${(overallConfidence * 100).toFixed(1)}%</span>)`;
+            analysisContent.prepend(resultDiv);
+        }
 
         if (Object.keys(filteredGroups).length > 0) {
             const chartContainer = document.createElement('div');
@@ -303,6 +351,7 @@ async function renderAnalysisData() {
         console.error('Lỗi khi render dữ liệu phân tích:', error);
         document.getElementById('error').textContent = '⚠️ Đã xảy ra lỗi khi phân tích dữ liệu!';
         document.getElementById('error').classList.remove('hidden');
+        loadingDiv.remove();
     }
 }
 

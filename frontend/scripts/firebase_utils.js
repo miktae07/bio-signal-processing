@@ -14,7 +14,7 @@ firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
 function parseNode(sensor, node, pathKeys) {
-    console.debug(`[parseNode] sensor=${sensor}, pathKeys=${JSON.stringify(pathKeys)}`);
+    // console.debug(`[parseNode] sensor=${sensor}, pathKeys=${JSON.stringify(pathKeys)}`);
     let records = [];
     if (node && typeof node === 'object') {
         for (const [key, value] of Object.entries(node)) {
@@ -27,7 +27,7 @@ function parseNode(sensor, node, pathKeys) {
                 ts = `${pathKeys[0]}-${pathKeys[1].padStart(2, '0')}-${pathKeys[2].padStart(2, '0')} ` +
                      `${pathKeys[3].padStart(2, '0')}:${pathKeys[4].padStart(2, '0')}:${pathKeys[5].padStart(2, '0')}`;
             } else {
-                console.warn(`[parseNode] pathKeys ngắn, dùng hiện tại:`, pathKeys);
+                // console.warn(`[parseNode] pathKeys ngắn, dùng hiện tại:`, pathKeys);
                 ts = moment().toISOString();
             }
             const baseTime = moment(ts);
@@ -51,12 +51,12 @@ async function getSensorGroups() {
     try {
         const snapshot = await database.ref('/').once('value');
         const data = snapshot.val();
-        console.log('[getSensorGroups] raw:', data);
+        // console.log('[getSensorGroups] raw:', data);
         if (!data || typeof data !== 'object') return {};
         let all = [];
         for (const [sensor, node] of Object.entries(data)) {
             const recs = parseNode(sensor, node, []);
-            console.log(`[parsed ${sensor}]`, recs);
+            // console.log(`[parsed ${sensor}]`, recs);
             all = all.concat(recs);
         }
         if (!all.length) return {};
@@ -66,7 +66,7 @@ async function getSensorGroups() {
             return acc;
         }, {});
         Object.values(grouped).forEach(arr => arr.sort((a, b) => new Date(a.time) - new Date(b.time)));
-        console.log('[getSensorGroups] grouped keys:', Object.keys(grouped));
+        // console.log('[getSensorGroups] grouped keys:', Object.keys(grouped));
         return grouped;
     } catch (e) {
         console.error('[getSensorGroups] lỗi:', e);
