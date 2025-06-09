@@ -4,7 +4,7 @@ import numpy as np
 from model.data_processing.ecg_analyse import predict_single_beat
 
 app = Flask(__name__)
-CORS(app)  # ✅ Bật CORS để cho phép gọi từ JS frontend
+CORS(app, origins=["https://bio-signal-processing.netlify.app"])
 
 @app.route('/')
 def index():

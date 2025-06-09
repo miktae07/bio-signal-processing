@@ -9,8 +9,9 @@ async function analyzeECG(ecgArray) {
         console.error('❌ Đầu vào ecgArray không hợp lệ:', ecgArray);
         return { error: 'Input ECG array is invalid' };
     }
+
     try {
-        const response = await fetch('http://127.0.0.1:5000/analyze_ecg', {
+        const response = await fetch('https://bio-signal-processing.onrender.com/analyze_ecg', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
