@@ -9,7 +9,8 @@
 </head>
 <body class="bg-gray-100 min-h-screen">
   <!-- Sidebar -->
-  <aside class="fixed top-0 left-0 w-64 h-full bg-gray-800 text-white p-4">
+  <button id="toggleSidebarBtn" class="fixed">☰</button>
+  <aside id="sidebar" class="fixed top-0 left-0 w-64 h-full bg-gray-800 text-white p-4">
     <h2 id="greeting" class="text-xl font-bold mb-4"></h2>
     <nav>
       <ul>
@@ -67,6 +68,7 @@
   </main>
 
   <script src="./scripts/utils.js"></script>
+  <script src="./scripts/render.js"></script>
   <script src="./scripts/image.js"></script>
 </body>
 </html>

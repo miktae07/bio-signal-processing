@@ -241,3 +241,49 @@ canvas {
     margin-bottom: 1rem;
     color: #000;
 }
+
+/* Ẩn sidebar khi đóng */
+.sidebar-hidden {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease; /* Hiệu ứng trượt mượt */
+}
+
+#toggleSidebarBtn {
+    position: relative;
+    top: 0; /* Cách đỉnh 1rem */
+    left: 19%;
+    background-color: #3b82f6; /* Màu nền xanh dương */
+    color: white;
+    border: none;
+    border-radius: 0.5rem; /* Bo góc nhẹ */
+    padding: 0.5rem 1rem; /* Đệm bên trong */
+    z-index: 100; /* Đảm bảo nút nằm trên sidebar */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu mượt */
+}
+
+#toggleSidebarBtn:hover {
+    background-color: #2563eb; /* Màu xanh đậm hơn khi hover */
+}
+
+/* Căn phải nội dung chào mừng */
+.text-right {
+    text-align: right;
+}
+
+#toggleSidebarBtn.button-hidden {
+    transition: left 0.3s ease;
+    left: 0.5rem; /* Vị trí khi sidebar ẩn */
+}
+
+/* styles.css */
+body.light {
+    background-color: #ffffff;
+    color: #000000;
+  }
+  
+body.dark {
+    background-color: #000000;
+    color: #ffffff;
+}

@@ -320,15 +320,3 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('analyzeBtn').addEventListener('click', renderAnalysisData);
 });
 
-const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
-const sidebar = document.getElementById('sidebar');
-
-toggleSidebarBtn.addEventListener('click', () => {
-    const isSidebarHidden = sidebar.classList.toggle('sidebar-hidden');
-    toggleSidebarBtn.classList.toggle('button-hidden', isSidebarHidden);
-    if (isSidebarHidden) {
-        toggleSidebarBtn.textContent = '☰'; // Update button text when sidebar is closed
-    } else {
-        toggleSidebarBtn.textContent = '☰'; // Update button text when sidebar is open
-    }
-});

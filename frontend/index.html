@@ -12,7 +12,8 @@
 </head>
 <body class="min-h-screen bg-gray-100">
     <!-- Sidebar -->
-    <aside class="fixed top-0 left-0 w-64 h-full bg-gray-800 text-white p-4">
+    <button id="toggleSidebarBtn" class="fixed">☰</button>
+    <aside id="sidebar" class="fixed top-0 left-0 w-64 h-full bg-gray-800 text-white p-4">
         <h2 id="greeting" class="text-xl font-bold mb-4"></h2>
         <nav>
             <ul>
@@ -42,6 +43,7 @@
 
     <!-- Main Content -->
     <main class="ml-64 p-4">
+        <div id="theme-container"></div>
         <div class="container mx-auto">
             <h1 class="text-3xl font-bold mb-4">🏠 Trang Chủ – Hiển Thị Dữ Liệu</h1>
             <div id="error" class="text-red-600 hidden"></div>
@@ -53,6 +55,10 @@
         </div>
     </main>
     <!-- Scripts -->
+    <script type="module">
+        import { initTheme } from './scripts/theme.js';
+        initTheme('theme-container');
+    </script>
     <script src="./scripts/firebase_utils.js"></script>
     <script src="./scripts/utils.js"></script>
     <script src="./scripts/render.js"></script>

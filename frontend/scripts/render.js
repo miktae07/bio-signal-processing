@@ -72,3 +72,22 @@ function renderCharts(sensorGroups) {
         }
     }
 }
+
+const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+const sidebar = document.getElementById('sidebar');
+const mainContent = document.querySelector('main'); // Select the main content
+
+toggleSidebarBtn.addEventListener('click', () => {
+    const isSidebarHidden = sidebar.classList.toggle('sidebar-hidden');
+    toggleSidebarBtn.classList.toggle('button-hidden', isSidebarHidden);
+
+    // Update button text based on sidebar visibility
+    toggleSidebarBtn.textContent = isSidebarHidden ? '☰' : '☰';
+
+    // Adjust main content width dynamically
+    if (isSidebarHidden) {
+        mainContent.style.marginLeft = '0'; // Remove left margin when sidebar is hidden
+    } else {
+        mainContent.style.marginLeft = '16rem'; // Restore left margin when sidebar is visible (16rem matches the sidebar width)
+    }
+});
