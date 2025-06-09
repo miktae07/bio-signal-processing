@@ -27,6 +27,16 @@ function setGreeting() {
 
 function mapLang(text) {
     const mapping = {
+        "Bradycardia": "Nhịp tim chậm (Bradycardia)",
+        "Normal": "Nhịp tim bình thường",
+        "Tachycardia": "Nhịp tim nhanh (Tachycardia)",
+        "Severe respiratory failure": "Suy hô hấp nặng (SpO2 < 90%)",
+        "Mild respiratory failure": "Suy hô hấp nhẹ (90% ≤ SpO2 < 95%)",
+        "Normal SpO2": "SpO2 bình thường (≥ 95%)",
+        "Hypothermia": "Hạ thân nhiệt",
+        "Fever": "Sốt",
+        "Abnormal": "Bất thường",
+        "Unknown": "Không xác định",
         "Nhịp tim chậm (Bradycardia)": "Bradycardia (Slow heart rate)",
         "Nhịp tim bình thường": "Normal heart rate",
         "Nhịp tim nhanh (Tachycardia)": "Tachycardia (Fast heart rate)",

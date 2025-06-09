@@ -1,3 +1,15 @@
+import analyzeBPM from './data_processing/analyzeBPM.js';
+import analyzeSpO2 from './data_processing/analyzeSpO2.js';
+import analyzeECG from './data_processing/analyzeECG.js';
+import analyzeTemp from './data_processing/analyzeTemp.js';
+
+console.log('analysis.js loaded');
+
+console.log(analyzeBPM(55)); // Output: Bradycardia
+console.log(analyzeSpO2(92)); // Output: Mild respiratory failure
+console.log(analyzeECG(120)); // Output: Abnormal
+console.log(analyzeTemp(35)); // Output: Hypothermia
+
 // Populate time options (every 5 minutes)
 function populateTimeOptions() {
     const times = [];
@@ -58,29 +70,6 @@ async function populateSignalSelect() {
     }
 }
 
-// Simulate analysis functions (placeholder since original functions are not available)
-function analyzeBPM(value) {
-    if (value < 60) return 'Bradycardia';
-    if (value > 100) return 'Tachycardia';
-    return 'Normal';
-}
-
-function analyzeSpO2(value) {
-    if (value < 90) return 'Severe respiratory failure';
-    if (value < 95) return 'Mild respiratory failure';
-    return 'Normal';
-}
-
-function analyzeECG(value) {
-    return value > 100 ? 'Abnormal' : 'Normal';
-}
-
-function analyzeTemp(value) {
-    if (value < 36) return 'Hypothermia';
-    if (value > 38) return 'Fever';
-    return 'Normal';
-}
-
 // Process signal data
 function processSignal(sensor, data, start, end) {
     const filteredData = data.filter(d => {
@@ -93,11 +82,20 @@ function processSignal(sensor, data, start, end) {
     filteredData.forEach(d => {
         let analysisResult;
         switch (sensor.toUpperCase()) {
-            case 'BPM': analysisResult = analyzeBPM(d.value); break;
-            case 'SPO2': analysisResult = analyzeSpO2(d.value); break;
-            case 'ECG': analysisResult = analyzeECG(d.value); break;
-            case 'TEMP': analysisResult = analyzeTemp(d.value); break;
-            default: analysisResult = 'Unknown';
+            case 'BPM': 
+                analysisResult = mapLang(analyzeBPM(d.value)); 
+                break;
+            case 'SPO2': 
+                analysisResult = mapLang(analyzeSpO2(d.value)); 
+                break;
+            case 'ECG': 
+                analysisResult = mapLang(analyzeECG(d.value)); 
+                break;
+            case 'TEMP': 
+                analysisResult = mapLang(analyzeTemp(d.value)); 
+                break;
+            default: 
+                analysisResult = mapLang('Unknown');
         }
         exportData.push({
             type: mapLang(sensor) || sensor,
@@ -197,7 +195,7 @@ async function renderAnalysisData() {
                             label: mapLang(sensor) || sensor,
                             data: filteredGroups[sensor].map(d => d.value),
                             fill: false,
-                            borderColor: `hsl(${index * 60}, 70%, 50%)`,
+                            borderColor: '#3b82f6',
                             tension: 0.1
                         }))
                     },
@@ -320,4 +318,17 @@ document.addEventListener('DOMContentLoaded', () => {
     populateTimeOptions();
     populateSignalSelect();
     document.getElementById('analyzeBtn').addEventListener('click', renderAnalysisData);
+});
+
+const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+const sidebar = document.getElementById('sidebar');
+
+toggleSidebarBtn.addEventListener('click', () => {
+    const isSidebarHidden = sidebar.classList.toggle('sidebar-hidden');
+    toggleSidebarBtn.classList.toggle('button-hidden', isSidebarHidden);
+    if (isSidebarHidden) {
+        toggleSidebarBtn.textContent = '☰'; // Update button text when sidebar is closed
+    } else {
+        toggleSidebarBtn.textContent = '☰'; // Update button text when sidebar is open
+    }
 });
