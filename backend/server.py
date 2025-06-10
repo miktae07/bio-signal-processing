@@ -4,7 +4,12 @@ import numpy as np
 from model.data_processing.ecg_analyse import predict_single_beat
 
 app = Flask(__name__)
-CORS(app, origins=["https://bio-signal-processing.netlify.app"])
+
+CORS(app, origins=[
+    "https://bio-signal-processing.netlify.app",  # production
+    "http://127.0.0.1:5500",                      # local bằng 127.0.0.1
+    "http://localhost:5500"                       # local bằng localhost
+])
 
 @app.route('/')
 def index():
@@ -40,4 +45,4 @@ def analyze_ecg():
         return jsonify({'error': 'Internal server error', 'details': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

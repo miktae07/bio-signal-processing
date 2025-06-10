@@ -11,7 +11,8 @@ async function analyzeECG(ecgArray) {
     }
 
     try {
-        const response = await fetch('https://bio-signal-processing.onrender.com/analyze_ecg', {
+        // Thay URL thành địa chỉ EC2 và port 5000
+        const response = await fetch('http://3.1.203.80:5000/analyze_ecg', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
