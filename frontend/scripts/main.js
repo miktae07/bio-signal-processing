@@ -1,7 +1,9 @@
+import { renderMetrics, renderCharts } from './render.js';
+
 async function loadData() {
     console.log('--- loadData start ---');
     const groups = await getSensorGroups();
-    console.log('[loadData] groups:', groups);
+    // console.log('[loadData] groups:', groups);
     const err = document.getElementById('error');
     if (!Object.keys(groups).length) {
         err.textContent = '⚠️ Chưa có dữ liệu từ Firebase!';

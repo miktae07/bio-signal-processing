@@ -3,14 +3,25 @@ import analyzeSpO2 from './data_processing/analyzeSpO2.js';
 import analyzeECG from './data_processing/analyzeECG.js';
 import analyzeTemp from './data_processing/analyzeTemp.js';
 
+// Global debug flag
+let isDebugEnabled = false;
+
+// Function to enable debug mode
+window.allowDebug = function() {
+    isDebugEnabled = true;
+    console.log('Debug mode enabled');
+};
+
 console.log('analysis.js loaded');
 
-// console.log(analyzeBPM(55)); // Output: Bradycardia
-// console.log(analyzeSpO2(92)); // Output: Mild respiratory failure
-// const ecgArray = [120, 125, 130, 128, 132, 129]; // 👈 Mảng giá trị
-// const result = await analyzeECG(ecgArray);
-// console.log(result); // Output: Kết quả phân tích ECG
-// console.log(analyzeTemp(35)); // Output: Hypothermia
+if(isDebugEnabled) {
+    console.log(analyzeBPM(55)); // Output: Bradycardia
+    console.log(analyzeSpO2(92)); // Output: Mild respiratory failure
+    const ecgArray = [120, 125, 130, 128, 132, 129]; // 👈 Mảng giá trị
+    const result = await analyzeECG(ecgArray);
+    console.log(result); // Output: Kết quả phân tích ECG
+    console.log(analyzeTemp(35)); // Output: Hypothermia
+}
 
 // Populate time options (every 5 minutes)
 function populateTimeOptions() {
@@ -88,7 +99,9 @@ async function processSignal(sensor, data, start, end) {
         const ecgValues = filteredData.map(d => d.value);
         const ecgResponse = await analyzeECG(ecgValues);
         if (ecgResponse && !ecgResponse.error) {
-            console.log('ECG analysis result:', ecgResponse);
+            if(isDebugEnabled) {
+                console.log('ECG analysis result:', ecgResponse);
+            }
             analysisResult = mapLang(ecgResponse.class_name); // ví dụ: 'S', 'V', 'N'
         } else {
             analysisResult = mapLang('Error');
@@ -167,7 +180,8 @@ async function renderAnalysisData() {
 
     try {
         const sensorGroups = await getSensorGroups();
-        console.log('Sensor groups:', sensorGroups);
+        if(isDebugEnabled)
+            console.log('Sensor groups:', sensorGroups);
         const filteredGroups = {};
         const exportData = [];
         const summaryRows = [];
@@ -212,10 +226,22 @@ async function renderAnalysisData() {
         loadingDiv.remove();
 
         // Hiển thị kết quả chung ở đầu
-        if (overallResult !== null && overallConfidence !== null) {
+        if (summaryRows.length > 0) {
             const resultDiv = document.createElement('div');
-            resultDiv.className = 'bg-green-100 text-green-800 p-4 rounded-lg mb-4 text-lg font-semibold flex items-center gap-2';
-            resultDiv.innerHTML = `✅ Kết quả ECG: <span class="font-bold">${mapLang(overallResult) || overallResult}</span> (Độ tin cậy: <span class="font-bold">${(overallConfidence * 100).toFixed(1)}%</span>)`;
+            resultDiv.className = 'bg-green-100 text-green-800 p-4 rounded-lg mb-4 text-lg font-semibold flex flex-col gap-2';
+
+            // Nếu có ECG thì ưu tiên hiển thị như cũ
+            if (overallResult !== null && overallConfidence !== null) {
+                resultDiv.innerHTML += `✅ Kết quả ECG: <span class="font-bold">${mapLang(overallResult) || overallResult}</span> (Độ tin cậy: <span class="font-bold">${(overallConfidence * 100).toFixed(1)}%</span>)<br>`;
+            }
+
+            // Hiển thị kết quả chung cho các loại khác
+            summaryRows.forEach(row => {
+                if (row.type !== (mapLang('ECG') || 'ECG')) {
+                    resultDiv.innerHTML += `✅ Kết quả ${row.type}: <span class="font-bold">${row.result}</span> (Min: ${row.min}, Max: ${row.max}, Mean: ${row.mean})<br>`;
+                }
+            });
+
             analysisContent.prepend(resultDiv);
         }
 

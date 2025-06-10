@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bảng Điều Khiển Cảm Biến Theo Thời Gian Thực</title>
+    <title>Hệ Thống Chăm Sóc Sức Khỏe Đa Kênh Thời Gian Thực</title>
     <link href="./styles/app.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -13,39 +13,18 @@
 <body class="min-h-screen bg-gray-100">
     <!-- Sidebar -->
     <button id="toggleSidebarBtn" class="fixed">☰</button>
-    <aside id="sidebar" class="fixed top-0 left-0 w-64 h-full bg-gray-800 text-white p-4">
-        <h2 id="greeting" class="text-xl font-bold mb-4"></h2>
-        <nav>
-            <ul>
-                <li><a href="index.html" class="block p-2 rounded bg-gray-600">🏠 Trang Chủ</a></li>
-                <li><a href="analysis.html" class="block p-2 rounded hover:bg-gray-700">📊 Phân Tích</a></li>
-                <li><a href="history.html" class="block p-2 rounded hover:bg-gray-700">🕒 Lịch sử</a></li>
-                <li><a href="image.html" class="block p-2 rounded hover:bg-gray-700">📷 Phân tích ảnh</a></li>
-                <li><a href="#" class="block p-2 rounded hover:bg-gray-700">👤 Người Dùng</a></li>
-            </ul>
-        </nav>
-        <hr class="my-6">
-        <div class="mb-4">
-            <label for="userSelect" class="block text-sm font-medium">👤 Chọn Người Dùng</label>
-            <select id="userSelect" class="w-full bg-gray-700 text-white border rounded p-2">
-                <option value="user1">user1</option>
-                <option value="user2">user2</option>
-                <option value="user3">user3</option>
-            </select>
-        </div>
-        <div class="mb-4">
-            <p><strong>Tên:</strong> <span id="userName">Nguyễn Văn A</span></p>
-            <p><strong>Tuổi:</strong> <span id="userAge">30</span></p>
-            <p><strong>Địa chỉ:</strong> <span id="userAddress">123 Đường ABC, Quận XYZ, Thành phố ABC</span></p>
-            <p><strong>Giới tính:</strong> <span id="userGender">Nam</span></p>
-        </div>
-    </aside>
+    <div id="sidebar-container"></div>
 
     <!-- Main Content -->
     <main class="ml-64 p-4">
         <div id="theme-container"></div>
         <div class="container mx-auto">
-            <h1 class="text-3xl font-bold mb-4">🏠 Trang Chủ – Hiển Thị Dữ Liệu</h1>
+            <h1 class="text-3xl font-bold mb-4">🏠 Trang chủ – Hiển Thị Dữ Liệu</h1>
+            <div class="flex justify-end mb-4">
+                <button id="customizeBtn" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                    ⚙️ Tuỳ chọn hiển thị
+                </button>
+            </div>
             <div id="error" class="text-red-600 hidden"></div>
             <h2 class="text-2xl font-semibold mt-6 mb-4">📊 Dữ liệu Hiện Tại</h2>
             <div id="metrics" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
@@ -53,15 +32,31 @@
             <h2 class="text-2xl font-semibold mb-4">📈 Biểu Đồ Biến Thiên</h2>
             <div id="charts"></div>
         </div>
+
+        <!-- Modal for Customize -->
+        <div id="customizeModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+                <h3 class="text-xl font-semibold mb-4">Chọn tín hiệu để hiển thị</h3>
+                <div id="sensorCheckboxes" class="space-y-2"></div>
+                <div class="mt-6 flex justify-end space-x-2">
+                    <button id="cancelCustomize" class="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400">Hủy</button>
+                    <button id="saveCustomize" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Lưu</button>
+                </div>
+            </div>
+        </div>
     </main>
+
     <!-- Scripts -->
     <script type="module">
+        import { createSidebar } from './scripts/components/sidebar.js';
         import { initTheme } from './scripts/theme.js';
+        const sidebarContainer = document.getElementById('sidebar-container');
+        sidebarContainer.appendChild(createSidebar());
         initTheme('theme-container');
     </script>
     <script src="./scripts/firebase_utils.js"></script>
     <script src="./scripts/utils.js"></script>
     <script src="./scripts/render.js"></script>
-    <script src="./scripts/main.js"></script>
+    <script type="module" src="./scripts/main.js"></script>
 </body>
 </html>

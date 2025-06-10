@@ -1,5 +1,5 @@
 function analyzeBPM(value) {
-    let result = 'Normal';
+    let result = 'Normal BPM';
     if (value < 60) {
         result = 'Bradycardia';
     } else if (value > 100) {

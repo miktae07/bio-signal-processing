@@ -1,5 +1,5 @@
 function analyzeSpO2(value) {
-    let result = 'Normal';
+    let result = 'Normal SpO2';
     if (value < 90) {
         result = 'Severe respiratory failure';
     } else if (value < 95) {

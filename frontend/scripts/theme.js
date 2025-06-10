@@ -3,17 +3,18 @@ export function initTheme(targetId) {
     const savedTheme = localStorage.getItem('theme') || 'light';
     document.body.classList.add(savedTheme);
 
-    // Dynamically inject global styles for text color
+    // Inject global styles, KHÔNG ép màu sidebar nữa
     const style = document.createElement('style');
     style.textContent = `
-        body.light, body.light * {
-            color: #000 !important; /* Text color for light mode */
-            background-color: #ffffff !important; /* Background color for light mode */
+        body.light, body.light *:not(#sidebar):not(#sidebar *) {
+            color: #000 !important;
+            background-color: #ffffff !important;
         }
-        body.dark, body.dark * {
-            color: #fff !important; /* Text color for dark mode */
-            background-color: #000000 !important; /* Background color for dark mode */
+        body.dark, body.dark *:not(#sidebar):not(#sidebar *) {
+            color: #fff !important;
+            background-color: #000000 !important;
         }
+        /* KHÔNG ép màu sidebar ở đây, để CSS quyết định */
     `;
     document.head.appendChild(style);
 
@@ -21,7 +22,7 @@ export function initTheme(targetId) {
     toggleButton.innerHTML = savedTheme === 'light' 
       ? '🌞 Light Mode' 
       : '🌙 Dark Mode';
-    toggleButton.style.position = 'relative'; // Adjust position for appending to a specific element
+    toggleButton.style.position = 'relative';
     toggleButton.style.zIndex = '1000';
     toggleButton.style.padding = '10px 20px';
     toggleButton.style.border = 'none';
@@ -44,14 +45,11 @@ export function initTheme(targetId) {
         const currentTheme = document.body.classList.contains('light') ? 'light' : 'dark';
         const newTheme = currentTheme === 'light' ? 'dark' : 'light';
 
-        // Update body class
         document.body.classList.remove(currentTheme);
         document.body.classList.add(newTheme);
 
-        // Save theme to localStorage
         localStorage.setItem('theme', newTheme);
 
-        // Update button styles and text dynamically
         toggleButton.innerHTML = newTheme === 'light' 
           ? '🌞 Light Mode' 
           : '🌙 Dark Mode';

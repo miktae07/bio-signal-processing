@@ -1,5 +1,5 @@
 function analyzeTemp(value) {
-    let result = 'Normal';
+    let result = 'Normal Temperature';
     if (value < 36) {
         result = 'Hypothermia';
     } else if (value > 38) {

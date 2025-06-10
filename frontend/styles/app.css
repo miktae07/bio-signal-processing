@@ -273,7 +273,6 @@ canvas {
 }
 
 #toggleSidebarBtn.button-hidden {
-    transition: left 0.3s ease;
     left: 0.5rem; /* Vị trí khi sidebar ẩn */
 }
 
@@ -286,4 +285,18 @@ body.light {
 body.dark {
     background-color: #000000;
     color: #ffffff;
+}
+
+body.light aside {
+    background-color: rgb(240, 242, 246) !important;
+    color: #222 !important;
+}
+body.dark aside {
+    background-color: #1e293b !important; /* xanh đậm */
+    color: #fff !important;
+}
+
+body.dark aside * {
+    background-color: #1e293b !important; /* xanh đậm */
+    color: #fff !important;
 }

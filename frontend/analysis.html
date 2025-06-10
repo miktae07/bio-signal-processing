@@ -15,40 +15,11 @@
 </head>
 <body class="min-h-screen bg-gray-100">
     <!-- Sidebar -->
-    <div style="display: flex; flex-direction: row;">
-        <button id="toggleSidebarBtn" class="fixed">☰</button>
-        <aside id="sidebar" class="fixed top-0 left-0 w-64 h-full bg-gray-800 text-white p-4 transition-transform transform translate-x-0">
-            <div class="mt-32 text-right">
-                <h2 id="greeting" class="text-xl font-bold mb-4"></h2>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="index.html" class="block p-2 rounded hover:bg-gray-700">🏠 Trang Chủ</a></li>
-                    <li><a href="analysis.html" class="block p-2 rounded bg-gray-600">📊 Phân Tích</a></li>
-                    <li><a href="history.html" class="block p-2 rounded hover:bg-gray-700">🕒 Lịch Sử</a></li>
-                    <li><a href="image.html" class="block p-2 rounded hover:bg-gray-700">📷 Phân Tích Ảnh</a></li>
-                    <li><a href="#" class="block p-2 rounded hover:bg-gray-700">👤 Người Dùng</a></li>
-                </ul>
-            </nav>
-            <hr class="my-4 border-gray-600">
-            <div class="mb-4">
-                <label for="userSelect" class="block text-sm font-medium">👤 Chọn Người Dùng</label>
-                <select id="userSelect" class="w-full bg-gray-700 text-white border rounded p-2">
-                    <option value="user1">user1</option>
-                    <option value="user2">user2</option>
-                    <option value="user3">user3</option>
-                </select>
-            </div>
-            <div class="mb-4">
-                <p><strong>Tên:</strong> <span id="userName">Nguyễn Văn A</span></p>
-                <p><strong>Tuổi:</strong> <span id="userAge">30</span></p>
-                <p><strong>Địa chỉ:</strong> <span id="userAddress">123 Đường ABC, Quận XYZ, Thành phố ABC</span></p>
-                <p><strong>Giới tính:</strong> <span id="userGender">Nam</span></p>
-            </div>
-        </aside>
-    </div>
+    <button id="toggleSidebarBtn" class="fixed">☰</button>
+    <div id="sidebar-container"></div>
     <!-- Main Content -->
     <main class="ml-64 p-4">
+        <div id="theme-container"></div>
         <div class="container mx-auto">
             <h1 class="text-3xl font-bold text-gray-900 mb-4">📊 Phân Tích Dữ Liệu Y Tế</h1>
             <div id="error" class="text-red-600 hidden"></div>
@@ -88,10 +59,17 @@
         </div>
 
         <!-- Scripts -->
+        <script type="module">
+            import { createSidebar } from './scripts/components/sidebar.js';
+            import { initTheme } from './scripts/theme.js';
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.appendChild(createSidebar());
+            initTheme('theme-container');
+        </script>
         <script src="./scripts/firebase_utils.js"></script>
         <script src="./scripts/utils.js"></script>
         <script src="./scripts/render.js"></script>
-        <script src="./scripts/main.js"></script>
+        <script type="module" src="./scripts/main.js"></script>
         <script type="module" src="./scripts/analysis.js"></script>
     </main>
 </body>
