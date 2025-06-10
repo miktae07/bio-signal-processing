@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Phân Tích Ảnh Y Tế</title>
-  <link href="./styles/app.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
 </head>
 <body class="bg-gray-100 min-h-screen">
   <!-- Sidebar -->
-  <button id="toggleSidebarBtn" class="fixed">☰</button>
-  <aside id="sidebar" class="fixed top-0 left-0 w-64 h-full bg-gray-800 text-white p-4">
+  <button id="toggleSidebarBtn" class="fixed top-4 left-4 z-20 text-white bg-gray-800 p-2 rounded-md md:hidden">☰</button>
+  <aside id="sidebar" class="fixed top-0 left-0 w-64 h-full bg-gray-800 text-white p-4 transform -translate-x-full md:translate-x-0 transition-transform duration-300">
     <h2 id="greeting" class="text-xl font-bold mb-4"></h2>
     <nav>
       <ul>
@@ -39,7 +39,7 @@
   </aside>
 
   <!-- Main Content -->
-  <main class="ml-64 p-4">
+  <main class="md:ml-64 p-4 transition-all duration-300">
     <div class="container mx-auto">
       <h1 class="text-2xl font-bold mb-4">🧠 Phân Tích Ảnh Y Tế</h1>
       <div class="mb-4">
@@ -54,21 +54,23 @@
       <div class="mb-4">
         <label for="bodyPart" class="block text-sm font-medium">Chọn bộ phận</label>
         <select id="bodyPart" class="w-full border rounded p-2">
-          <option value="Ngực">Ngực</option>
-          <option value="Não">Não</option>
-          <option value="Gan" selected>Gan</option>
-          <option value="Bụng">Bụng</option>
+          <option value="Chest">Ngực</option>
+          <option value="Brain">Não</option>
+          <option value="Liver" selected>Gan</option>
+          <option value="Abdomen">Bụng</option>
         </select>
       </div>
       <p class="mb-4"><strong>Bạn chọn:</strong> <span id="selection">CT - Gan</span></p>
       <input type="file" id="fileInput" accept="image/jpeg,image/png" multiple class="mb-4">
-      <button id="analyzeBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" disabled>Phân tích</button>
+      <button id="analyzeBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400" disabled>Phân tích</button>
+      <div id="loading" class="hidden text-blue-600 mt-2">Đang phân tích...</div>
+      <div id="error" class="hidden text-red-600 mt-2"></div>
       <div id="results" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4"></div>
     </div>
   </main>
 
-  <script src="./scripts/utils.js"></script>
-  <script src="./scripts/render.js"></script>
-  <script src="./scripts/image.js"></script>
+  <script type="module" src="./scripts/utils.js"></script>
+  <script type="module" src="./scripts/render.js"></script>
+  <script type="module" src="./scripts/image.js"></script>
 </body>
 </html>
