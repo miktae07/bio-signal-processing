@@ -12,7 +12,7 @@ async function analyzeECG(ecgArray) {
 
     try {
         // Thay URL thành địa chỉ EC2 và port 5000
-        const response = await fetch('http://3.1.203.80:5000/analyze_ecg', {
+        const response = await fetch('http://18.142.170.148:5000/analyze_ecg', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
