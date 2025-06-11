@@ -1,6 +1,12 @@
 import { renderMetrics, renderCharts } from './render.js';
+let isLoading = false;
 
 async function loadData() {
+    if(isLoading) {
+        console.log('Load data already in progress, skipping...');
+        return;
+    }
+    isLoading = true;
     console.log('--- loadData start ---');
     const groups = await getSensorGroups();
     // console.log('[loadData] groups:', groups);
@@ -25,6 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
         updateUserProfile(e.target.value);
     });
     loadData();
-    database.ref('/').on('value', () => { console.log('Firebase updated'); loadData(); });
-    document.getElementById('reloadBtn').addEventListener('click', loadData);
+    let debounceTimeout;
+    database.ref('/').on('value', () => {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => {
+            console.log('Firebase updated');
+            loadData();
+        }, 3); // 3ms debounce
+    });
 });

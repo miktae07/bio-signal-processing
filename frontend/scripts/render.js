@@ -15,22 +15,6 @@ window.allowDebug = function() {
 // Store selected sensors (default: all sensors enabled)
 let selectedSensors = JSON.parse(localStorage.getItem('selectedSensors')) || {};
 
-// Function to render sensor selection modal
-function renderSensorSelectionModal(sensorGroups) {
-    const checkboxesDiv = document.getElementById('sensorCheckboxes');
-    checkboxesDiv.innerHTML = '';
-    Object.keys(sensorGroups).forEach(sensor => {
-        const isChecked = selectedSensors[sensor] !== false; // Default to true if not explicitly false
-        const checkbox = `
-            <div class="flex items-center">
-                <input type="checkbox" id="sensor-${sensor}" value="${sensor}" ${isChecked ? 'checked' : ''} class="mr-2">
-                <label for="sensor-${sensor}" class="text-gray-700">${getSensorIcon(sensor)} ${mapLang(sensor)}</label>
-            </div>
-        `;
-        checkboxesDiv.innerHTML += checkbox;
-    });
-}
-
 // Function to save selected sensors
 function saveSelectedSensors() {
     const checkboxes = document.querySelectorAll('#sensorCheckboxes input[type="checkbox"]');
@@ -49,6 +33,10 @@ export async function renderMetrics(sensorGroups) {
         console.log('[renderMetrics]', sensorGroups);
     }
     const metricsDiv = document.getElementById('metrics');
+    if(!metricsDiv) {
+        console.error('Element with ID "metrics" not found.');
+        return;
+    }
     metricsDiv.innerHTML = '';
     for (const [sensor, data] of Object.entries(sensorGroups)) {
         // Skip rendering if sensor is not selected
@@ -76,10 +64,15 @@ export async function renderMetrics(sensorGroups) {
                     if (res && !res.error) {
                         resultText = `🔎 Kết quả: <span class="font-bold">${mapLang(res.class_name) || res.class_name}</span> (Độ tin cậy: <span class="font-bold">${(res.confidence * 100).toFixed(1)}%</span>)`;
                     } else {
-                        resultText = 'Không phân tích được ECG';
+                        const errorMessage = res.error ? ` (Lỗi: ${res.error})` : '';
+                        resultText = `Không phân tích được ECG${errorMessage}`;
                     }
                     const cardDiv = metricsDiv.querySelector(`[data-sensor="${sensor}"] .diagnosis`);
                     if (cardDiv) cardDiv.innerHTML = resultText;
+                }).catch(err => {
+                    const cardDiv = metricsDiv.querySelector(`[data-sensor="${sensor}"] .diagnosis`);
+                    if (cardDiv) cardDiv.innerHTML = `Không phân tích được ECG (Lỗi hệ thống: ${err.message || err})`;
+                    console.error('Error during ECG analysis:', err);
                 });
             } else {
                 diagnosis = 'Không đủ dữ liệu ECG 1 phút gần nhất';
@@ -209,17 +202,66 @@ const customizeModal = document.getElementById('customizeModal');
 const cancelCustomize = document.getElementById('cancelCustomize');
 const saveCustomize = document.getElementById('saveCustomize');
 
-customizeBtn.addEventListener('click', () => {
-    customizeModal.classList.remove('hidden');
-    // Assume sensorGroups is available globally or passed; for now, trigger a fetch
-    window.dispatchEvent(new CustomEvent('fetchSensorGroupsForModal'));
+// Ensure sensorGroups is globally available or fetched dynamically
+let sensorGroups = {}; // Example: Replace with actual sensor data fetching logic
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (customizeBtn) {
+        customizeBtn.addEventListener('click', () => {
+            if (!customizeModal) {
+                console.error('Element with ID "customizeModal" not found.');
+            } else {
+                // Populate sensor checkboxes
+                renderSensorSelectionModal(sensorGroups);
+                customizeModal.classList.remove('hidden');
+            }
+        });
+    }
+
+    if (cancelCustomize) {
+        cancelCustomize.addEventListener('click', () => {
+            if (customizeModal) {
+                customizeModal.classList.add('hidden');
+            } else {
+                console.error('Element with ID "customizeModal" not found.');
+            }
+        });
+    }
+
+    if (saveCustomize) {
+        saveCustomize.addEventListener('click', () => {
+            saveSelectedSensors();
+            if (customizeModal) {
+                customizeModal.classList.add('hidden');
+            } else {
+                console.error('Element with ID "customizeModal" not found.');
+            }
+        });
+    }
 });
 
-cancelCustomize.addEventListener('click', () => {
-    customizeModal.classList.add('hidden');
-});
+// Function to render sensor selection modal
+function renderSensorSelectionModal(sensorGroups) {
+    const checkboxesDiv = document.getElementById('sensorCheckboxes');
+    if (!checkboxesDiv) {
+        console.error('Element with ID "sensorCheckboxes" not found.');
+        return;
+    }
+    checkboxesDiv.innerHTML = ''; // Clear existing checkboxes
+    Object.keys(sensorGroups).forEach(sensor => {
+        const isChecked = selectedSensors[sensor] !== false; // Default to true if not explicitly false
+        const checkbox = `
+            <div class="flex items-center">
+                <input type="checkbox" id="sensor-${sensor}" value="${sensor}" ${isChecked ? 'checked' : ''} class="mr-2">
+                <label for="sensor-${sensor}" class="text-gray-700">${getSensorIcon(sensor)} ${mapLang(sensor)}</label>
+            </div>
+        `;
+        checkboxesDiv.innerHTML += checkbox;
+    });
+}
 
-saveCustomize.addEventListener('click', () => {
-    saveSelectedSensors();
-    customizeModal.classList.add('hidden');
+// Listen for sensor group updates to populate the modal
+window.addEventListener('fetchSensorGroupsForModal', () => {
+    const sensorGroups = window.sensorGroups || {}; // Assume sensorGroups is globally available
+    renderSensorSelectionModal(sensorGroups);
 });
