@@ -66,7 +66,7 @@ def detect_objects(
 
     return result_img, detections
 
-def predict_ct_liver_mask(model_path: str, image: Image.Image) -> Image.Image:
+def predict_ct_liver_mask(model_path: str, image: Image.Image, target_size=(128, 128), threshold=0.5) -> Image.Image:
     """
     Hàm dự đoán mask phân đoạn gan cho ảnh CT bằng mô hình đã huấn luyện.
 
@@ -78,19 +78,27 @@ def predict_ct_liver_mask(model_path: str, image: Image.Image) -> Image.Image:
         Ảnh PIL hiển thị mặt nạ đầu ra (grayscale)
     """
     model_path = get_model_path(model_path)
-    model = keras_load(model_path)
+    # Load model
+    model = load_model(model_path, compile=False)
 
-    input_size = (128, 128)
-    
     # ✅ Chuyển về RGB nếu ảnh có kênh Alpha hoặc Grayscale
     if image.mode != "RGB":
         image = image.convert("RGB")
 
-    resized_image = image.resize(input_size)
-    img_array = np.array(resized_image) / 255.0
-    input_tensor = img_array[None, ...]  # shape (1, 128, 128, 3)
+    # Resize image
+    img_resized = image.resize(target_size)
 
-    pred_mask = model.predict(input_tensor)[0]  # shape (128, 128, 1)
-    mask_img = Image.fromarray((pred_mask.squeeze() * 255).astype(np.uint8))
+    # Preprocess
+    img_array = np.array(img_resized).astype(np.float32) / 255.0
+    batch = np.expand_dims(img_array, 0)  # Add batch dimension
+
+    # Predict
+    pred = model.predict(batch)[0]  # shape (128, 128, 1)
+    mask = (pred > threshold).astype(np.uint8) * 255
+    if mask.ndim == 3:
+        mask = mask[..., 0]
+
+    # Convert mask to PIL image
+    mask_img = Image.fromarray(mask)
 
     return mask_img

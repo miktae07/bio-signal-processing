@@ -6,12 +6,7 @@ import base64
 from PIL import Image
 from ultralytics import YOLO
 from model.data_processing.ecg_analyse import predict_single_beat
-from model.image_processing import (
-    detect_objects,
-    predict_ct_liver_mask,
-    MODEL_MAP,
-    KERAS_MAP
-)
+from model.image_processing.predict_ct_liver_image import *
 
 app = Flask(__name__)
 
@@ -69,46 +64,68 @@ def analyze_ecg():
 @app.route('/predict_image', methods=['POST'])
 def predict_image():
     # Validate file & params
+    print("Debug: Received request for image prediction.")
     if 'image' not in request.files:
+        print("Debug: No image file provided.")
         return jsonify({'error': 'No image file provided'}), 400
+
     image_file = request.files['image']
     image_type = request.form.get('image_type')
     body_part = request.form.get('body_part')
 
+    print(f"Debug: image_type={image_type}, body_part={body_part}")
+
     if image_type not in SUPPORTED_IMAGE_TYPES:
+        print(f"Debug: Invalid image_type={image_type}. Must be one of {SUPPORTED_IMAGE_TYPES}.")
         return jsonify({'error': f'Invalid image_type. Must be one of {SUPPORTED_IMAGE_TYPES}'}), 400
     if body_part not in SUPPORTED_BODY_PARTS:
+        print(f"Debug: Invalid body_part={body_part}. Must be one of {SUPPORTED_BODY_PARTS}.")
         return jsonify({'error': f'Invalid body_part. Must be one of {SUPPORTED_BODY_PARTS}'}), 400
 
     # Open and ensure RGB
     try:
+        print("Debug: Attempting to open and convert image to RGB.")
         img = Image.open(image_file).convert('RGB')
     except Exception as e:
+        print(f"Debug: Failed to open image file. Error: {str(e)}")
         return jsonify({'error': 'Invalid image file', 'details': str(e)}), 400
 
     key = (image_type, body_part)
+    print(f"Debug: Key for model lookup: {key}")
+
     # YOLO path
     if key in MODEL_MAP:
+        print(f"Debug: Found YOLO model for key={key}.")
         try:
             model = YOLO(MODEL_MAP[key])
+            print("Debug: YOLO model loaded successfully.")
             result_np, detections = detect_objects(model, img)
+            print(f"Debug: YOLO detections: {detections}")
             if not detections:
+                print("Debug: No objects detected.")
                 return jsonify({'error': 'No objects detected'}), 200
             result_b64 = image_to_base64(result_np)
+            print("Debug: YOLO result image converted to base64.")
             return jsonify({'detections': detections, 'result_image': f'data:image/png;base64,{result_b64}'})
         except Exception as e:
+            print(f"Debug: YOLO processing failed. Error: {str(e)}")
             return jsonify({'error': 'YOLO processing failed', 'details': str(e)}), 500
 
     # Keras segmentation path
     if key in KERAS_MAP:
+        print(f"Debug: Found Keras model for key={key}.")
         try:
             mask_img = predict_ct_liver_mask(KERAS_MAP[key], img)
+            print("Debug: Keras mask image generated successfully.")
             mask_b64 = image_to_base64(mask_img)
+            print("Debug: Keras mask image converted to base64.")
             return jsonify({'mask_image': f'data:image/png;base64,{mask_b64}'})
         except Exception as e:
+            print(f"Debug: Keras processing failed. Error: {str(e)}")
             return jsonify({'error': 'Keras processing failed', 'details': str(e)}), 500
 
+    print(f"Debug: Unsupported combination: {image_type} - {body_part}.")
     return jsonify({'error': f'Unsupported combination: {image_type} - {body_part}'}), 400
-
+    
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
