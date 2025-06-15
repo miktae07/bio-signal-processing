@@ -127,5 +127,7 @@ def predict_image():
     print(f"Debug: Unsupported combination: {image_type} - {body_part}.")
     return jsonify({'error': f'Unsupported combination: {image_type} - {body_part}'}), 400
     
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # debug=True để thấy log, use_reloader=False để chỉ chạy 1 process
+    app.run(host='0.0.0.0', port=8080, debug=True, use_reloader=False)

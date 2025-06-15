@@ -2,7 +2,7 @@
 from pathlib import Path
 from ultralytics import YOLO
 from PIL import Image
-from tensorflow.keras.models import load_model as keras_load
+from tensorflow.keras.models import load_model
 from typing import Tuple, List
 import numpy as np
 import tensorflow as tf
@@ -14,7 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 print("Current working directory for image processing:", BASE_DIR)
 
 WEIGHTS_DIR = BASE_DIR / "weights"
-KERAS_DIR = BASE_DIR / "keras"
+KERAS_DIR = BASE_DIR / "weights"
 
 # Map hiển thị → key để chọn weights
 BODY_PARTS_VI = {
