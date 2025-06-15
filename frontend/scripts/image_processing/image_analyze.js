@@ -28,7 +28,7 @@ async function analyzeImage(imageFile, imageType, bodyPart) {
         formData.append('body_part', bodyPart);
 
         // Gửi yêu cầu POST đến backend
-        const response = await fetch('http://18.142.170.148:5000/predict_image', {
+        const response = await fetch('http://13.250.3.11:5000/predict_image', {
             method: 'POST',
             body: formData
         });

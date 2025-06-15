@@ -276,27 +276,55 @@ canvas {
     left: 0.5rem; /* Vị trí khi sidebar ẩn */
 }
 
-/* styles.css */
+/* Light, dark mode */
+/* Giao diện light nhẹ mắt hơn */
 body.light {
-    background-color: #ffffff;
-    color: #000000;
-  }
+    background-color: #f9fafb;  /* Màu nền dịu thay vì trắng gắt */
+    color: #1f2937; /* Màu chữ xám đậm dễ đọc */
+}
   
+/* Giao diện dark */
 body.dark {
-    background-color: #000000;
+    background-color: #0f172a; /* đen xanh đậm hơn, dễ chịu hơn #000 */
     color: #ffffff;
 }
 
+/* Sidebar trong light mode */
 body.light aside {
-    background-color: rgb(240, 242, 246) !important;
-    color: #222 !important;
-}
-body.dark aside {
-    background-color: #1e293b !important; /* xanh đậm */
-    color: #fff !important;
+    background-color: #f3f4f6 !important; /* Nền sidebar dịu */
+    color: #1f2937 !important;
 }
 
+/* Sidebar trong dark mode */
+body.dark aside {
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+}
+
+/* Tránh ghi đè toàn bộ với aside * */
 body.dark aside * {
-    background-color: #1e293b !important; /* xanh đậm */
-    color: #fff !important;
+    background-color: transparent !important;
+    color: #ffffff !important;
+}
+
+/* Nút Analyze trong cả 2 chế độ */
+#analyzeBtn {
+    background-color: #3b82f6;
+    color: #ffffff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+/* Hover hiệu ứng cho nút */
+#analyzeBtn:hover {
+    background-color: #2563eb;
+}
+
+/* Nếu cần phân biệt màu giữa light và dark cho nút */
+body.dark #analyzeBtn {
+    background-color: #2563eb !important;
+    color: #ffffff !important;
 }

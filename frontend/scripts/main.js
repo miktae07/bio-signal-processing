@@ -1,4 +1,6 @@
 import { renderMetrics, renderCharts } from './render.js';
+import { setGreeting, updateUserProfile, getUnit } from './utils.js';
+
 let isLoading = false;
 
 async function loadData() {

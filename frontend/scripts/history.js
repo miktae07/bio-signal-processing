@@ -1,4 +1,6 @@
- // Set default date and time
+ import { setGreeting, updateUserProfile, getUnit, getSensorIcon, mapLang } from './utils.js';
+
+// Set default date and time
             function setDefaultDateTime() {
                 const startDateInput = document.getElementById('startDate');
                 const startTimeInput = document.getElementById('startTime');

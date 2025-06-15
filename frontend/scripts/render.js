@@ -2,6 +2,7 @@ import analyzeBPM from './data_processing/analyzeBPM.js';
 import analyzeSpO2 from './data_processing/analyzeSpO2.js';
 import analyzeTemp from './data_processing/analyzeTemp.js';
 import analyzeECG from './data_processing/analyzeECG.js';
+import { setGreeting, updateUserProfile, getUnit, getSensorIcon, mapLang } from './utils.js';
 
 // Global debug flag
 let isDebugEnabled = false;

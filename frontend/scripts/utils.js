@@ -4,7 +4,7 @@ const userProfiles = {
     user3: { Tên: "Lê Văn C", Tuổi: "40", "Địa chỉ": "789 Đường GHI, Quận RST, Thành phố ABC", "Giới tính": "Nam" }
 };
 
-function updateUserProfile(userId) {
+export function updateUserProfile(userId) {
     const profile = userProfiles[userId] || {
         Tên: "Nguyễn Văn A",
         Tuổi: "30",
@@ -17,7 +17,7 @@ function updateUserProfile(userId) {
     document.getElementById('userGender').textContent = profile["Giới tính"];
 }
 
-function setGreeting() {
+export function setGreeting() {
     const now = moment().utcOffset('+07:00'); // Đặt múi giờ UTC+7
     console.log("Now ", now.format());
     const hour = now.hour();
@@ -25,7 +25,7 @@ function setGreeting() {
     document.getElementById('greeting').textContent = greeting;
 }
 
-function mapLang(text) {
+export function mapLang(text) {
     const mapping = {
         "Bradycardia": "Nhịp tim chậm (Bradycardia)",
         "Normal BPM": "Nhịp tim bình thường",
@@ -59,7 +59,7 @@ function mapLang(text) {
     return mapping[text] || text;
 }
 
-function getUnit(sensor) {
+export function getUnit(sensor) {
     sensor = sensor.toUpperCase();
     if (sensor === "BPM") return "bpm";
     if (sensor === "SPO2") return "%";
@@ -68,7 +68,7 @@ function getUnit(sensor) {
     return "";
 }
 
-function getSensorIcon(sensor) {
+export function getSensorIcon(sensor) {
     sensor = sensor.toUpperCase();
     if (sensor.includes("BPM") || sensor.includes("HEART")) return "❤️";
     if (sensor.includes("SPO2") || sensor.includes("OXY")) return "🫁";
@@ -76,3 +76,4 @@ function getSensorIcon(sensor) {
     if (sensor.includes("TEMP") || sensor.includes("NHIỆT")) return "🌡️";
     return "🔧";
 }
+
