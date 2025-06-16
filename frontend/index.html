@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,6 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
 </head>
+
 <body class="min-h-screen bg-gray-100">
     <!-- Sidebar -->
     <button id="toggleSidebarBtn" class="fixed">☰</button>
@@ -23,9 +25,9 @@
         </button>
         <div id="settings-dropdown" class="hidden">
             <h3 class="text-lg font-semibold mb-2">Cài Đặt</h3>
-            <button id="change-theme-btn" class="mb-2">Thay Đổi Theme</button>
-            <button id="change-lang-btn" class="mb-2">Thay Đổi Ngôn Ngữ</button>
-            <button id="connect-backend-btn">Kết Nối Backend</button>
+            <button id="change-theme-btn" class="mb-2">Giao diện</button>
+            <button id="change-lang-btn" class="mb-2">Ngôn Ngữ</button>
+            <button id="connect-backend-btn">Địa chỉ Backend</button>
         </div>
     </div>
     <!-- Main Content -->
@@ -48,71 +50,32 @@
         import { initTheme } from './scripts/theme.js';
         const sidebarContainer = document.getElementById('sidebar-container');
         sidebarContainer.appendChild(createSidebar());
-        initTheme('theme-container');
-
-        // Settings Dropdown Logic
-        const settingsBtn = document.getElementById('settings-btn');
-        const settingsDropdown = document.getElementById('settings-dropdown');
-
-        settingsBtn.addEventListener('click', () => {
-            settingsDropdown.classList.toggle('hidden');
-        });
-
-        document.getElementById('change-theme-btn').addEventListener('click', () => {
-            console.info('Thay đổi theme!');
-            // Add theme change logic here
-        });
-
-        document.getElementById('change-lang-btn').addEventListener('click', () => {
-            console.info('Thay đổi ngôn ngữ!');
-            // Add language change logic here
-        });
-
-        document.getElementById('connect-backend-btn').addEventListener('click', () => {
-            console.info('Kết nối backend!');
-            // Add backend connection logic here
-        });
+        initTheme();
     </script>
     <script src="./scripts/firebase_utils.js"></script>
+    <script type="module" src="./scripts/setting.js"></script>
     <script type="module" src="./scripts/utils.js"></script>
     <script type="module" src="./scripts/render.js"></script>
     <script type="module" src="./scripts/main.js"></script>
-    <!-- Backend Connection Modal Logic -->
-    <script type="module">
-        const backendModal = document.getElementById('backend-modal');
-        const backendAddressInput = document.getElementById('backend-address');
-        const connectBackendBtn = document.getElementById('connect-backend-btn');
-        const cancelBackendBtn = document.getElementById('cancel-backend-btn');
-        const submitBackendBtn = document.getElementById('submit-backend-btn');
-
-        // Show modal when "Kết nối backend" is clicked
-        connectBackendBtn.addEventListener('click', () => {
-            backendModal.classList.remove('hidden');
-        });
-
-        // Hide modal when "Hủy" is clicked
-        cancelBackendBtn.addEventListener('click', () => {
-            backendModal.classList.add('hidden');
-        });
-
-        // Log backend address and hide modal when "Kết Nối" is clicked
-        submitBackendBtn.addEventListener('click', () => {
-            const backendAddress = backendAddressInput.value;
-            console.info(`Kết nối đến backend: ${backendAddress}`);
-            backendModal.classList.add('hidden');
-        });
-    </script>
     <!-- Backend Connection Modal -->
     <div id="backend-modal" class="hidden">
-        <div class="bg-white rounded-lg shadow-lg p-6 w-96">
+        <div class="modal-content bg-white rounded-lg shadow-lg p-6 w-96">
             <h2 class="text-xl font-semibold mb-4">Nhập Địa Chỉ Backend</h2>
-            <label for="backend-address" class="block text-sm font-medium mb-2">Địa Chỉ Backend:</label>
-            <input id="backend-address" type="text" class="w-full border border-gray-300 rounded p-2 mb-4" value="localhost">
-            <div class="flex justify-end">
-                <button id="cancel-backend-btn" class="mr-2 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Hủy</button>
-                <button id="submit-backend-btn" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Kết Nối</button>
+            <input id="backend-address" type="text"
+                class="backend-input w-full border border-gray-300 rounded-lg p-3 mb-6"
+                placeholder="Ví dụ: http://localhost:5000" />
+            <div class="flex justify-end space-x-3">
+                <button id="cancel-backend-btn"
+                    class="btn-cancel px-5 py-2 rounded-lg shadow hover:shadow-md transition">
+                    Hủy
+                </button>
+                <button id="submit-backend-btn"
+                    class="btn-submit px-6 py-2 rounded-lg shadow hover:shadow-md transition">
+                    Kết Nối
+                </button>
             </div>
         </div>
     </div>
 </body>
+
 </html>

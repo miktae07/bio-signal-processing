@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,52 +9,74 @@
     <link href="./styles/app.css" rel="stylesheet">
     <link href="./styles/history.css" rel="stylesheet">
     <link href="./styles/analysis.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone.min.js"></script>
 </head>
+
 <body class="min-h-screen bg-gray-100">
     <!-- Sidebar -->
     <button id="toggleSidebarBtn" class="fixed">☰</button>
     <div id="sidebar-container"></div>
+    <div id="settings-container" class="top-4 right-4">
+        <button id="settings-btn">
+            ⚙️
+        </button>
+        <div id="settings-dropdown" class="hidden">
+            <h3 class="text-lg font-semibold mb-2">Cài Đặt</h3>
+            <button id="change-theme-btn" class="mb-2">Giao diện</button>
+            <button id="change-lang-btn" class="mb-2">Ngôn Ngữ</button>
+            <button id="connect-backend-btn">Địa chỉ Backend</button>
+        </div>
+    </div>
     <!-- Main Content -->
     <main class="ml-64 p-4">
         <div id="theme-container"></div>
         <div class="container mx-auto">
             <h1 class="text-3xl font-bold text-gray-900 mb-4">📊 Phân Tích Dữ Liệu Y Tế</h1>
             <div id="error" class="text-red-600 hidden"></div>
-            
+
             <!-- Signal Selection -->
             <!-- Trong <div class="mb-6" của tín hiệu phân tích -->
-          <!-- Thay thế phần <div class="mb-6"> cho tín hiệu phân tích -->
-          <div class="mb-6">
-              <label for="signalSelect" class="block text-sm font-medium text-gray-700">🔍 Chọn tín hiệu phân tích</label>
-              <select id="signalSelect" required class="w-full bg-white border border-gray-30 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 invalid:border-red-500 invalid:bg-red-50" data-placeholder="Chọn tín hiệu">
-                  <!-- Options will be populated dynamically by JavaScript -->
-              </select>
-              <span id="signalError" class="text-red-600 text-sm hidden">Vui lòng chọn ít nhất một tín hiệu!</span>
-          </div>
+            <!-- Thay thế phần <div class="mb-6"> cho tín hiệu phân tích -->
+            <div class="mb-6">
+                <label for="signalSelect" class="block text-sm font-medium text-gray-700">🔍 Chọn tín hiệu phân
+                    tích</label>
+                <select id="signalSelect" required
+                    class="w-full bg-white border border-gray-30 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 invalid:border-red-500 invalid:bg-red-50"
+                    data-placeholder="Chọn tín hiệu">
+                    <!-- Options will be populated dynamically by JavaScript -->
+                </select>
+                <span id="signalError" class="text-red-600 text-sm hidden">Vui lòng chọn ít nhất một tín hiệu!</span>
+            </div>
 
             <!-- Date and Time Filters -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div>
                     <label for="startDate" class="block text-sm font-medium text-gray-700">📅 Ngày bắt đầu</label>
-                    <input type="date" id="startDate" class="w-full bg-white border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                    <input type="date" id="startDate"
+                        class="w-full bg-white border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
                     <label for="startTime" class="block text-sm font-medium text-gray-700 mt-2">⏰ Giờ bắt đầu</label>
-                    <input type="time" id="startTime" class="w-full bg-white border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                    <input type="time" id="startTime"
+                        class="w-full bg-white border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div>
                     <label for="endDate" class="block text-sm font-medium text-gray-700">📅 Ngày kết thúc</label>
-                    <input type="date" id="endDate" class="w-full bg-white border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                    <input type="date" id="endDate"
+                        class="w-full bg-white border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
                     <label for="endTime" class="block text-sm font-medium text-gray-700 mt-2">⏰ Giờ kết thúc</label>
-                    <input type="time" id="endTime" class="w-full bg-white border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                    <input type="time" id="endTime"
+                        class="w-full bg-white border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
                 </div>
             </div>
 
             <!-- Analyze Button -->
-            <button id="analyzeBtn" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition duration-200 mb-6">🔍 Chạy phân tích</button>
+            <button id="analyzeBtn"
+                class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition duration-200 mb-6">🔍
+                Chạy phân tích</button>
 
             <!-- Charts and Tables -->
             <div id="analysisContent"></div>
@@ -65,13 +88,33 @@
             import { initTheme } from './scripts/theme.js';
             const sidebarContainer = document.getElementById('sidebar-container');
             sidebarContainer.appendChild(createSidebar());
-            initTheme('theme-container');
+            initTheme('');
         </script>
         <script src="./scripts/firebase_utils.js"></script>
+        <script type="module" src="./scripts/setting.js"></script>
         <script type="module" src="./scripts/utils.js"></script>
         <script type="module" src="./scripts/render.js"></script>
         <script type="module" src="./scripts/main.js"></script>
         <script type="module" src="./scripts/analysis.js"></script>
     </main>
+    <div id="backend-modal" class="hidden">
+        <div class="modal-content bg-white rounded-lg shadow-lg p-6 w-96">
+            <h2 class="text-xl font-semibold mb-4">Nhập Địa Chỉ Backend</h2>
+            <input id="backend-address" type="text"
+                class="backend-input w-full border border-gray-300 rounded-lg p-3 mb-6"
+                placeholder="Ví dụ: http://localhost:5000" />
+            <div class="flex justify-end space-x-3">
+                <button id="cancel-backend-btn"
+                    class="btn-cancel px-5 py-2 rounded-lg shadow hover:shadow-md transition">
+                    Hủy
+                </button>
+                <button id="submit-backend-btn"
+                    class="btn-submit px-6 py-2 rounded-lg shadow hover:shadow-md transition">
+                    Kết Nối
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>

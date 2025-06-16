@@ -1,3 +1,4 @@
+import { getBackendAddress } from '../backend_config.js';
 /**
  * Gửi tín hiệu ECG (mảng giá trị) đến server backend để phân tích
  * @param {number[]} ecgArray - Mảng giá trị ECG
@@ -11,8 +12,9 @@ async function analyzeECG(ecgArray) {
     }
 
     try {
-        // Thay URL thành địa chỉ EC2 và port 5000
-        const response = await fetch('https://13.250.3.11/analyze_ecg', {
+        const backendURL = getBackendAddress(); // lấy địa chỉ backend hiện tại
+        console.info('Get result from URL:', `${backendURL}/analyze_ecg`);
+        const response = await fetch(`${backendURL}/analyze_ecg`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

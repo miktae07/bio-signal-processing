@@ -1,5 +1,5 @@
-import analyzeImage from './image_processing/image_analyze.js';
-import { setGreeting, updateUserProfile, getUnit } from './utils.js';
+import analyzeImage from '../image_processing/image_analyze.js';
+import { setGreeting, updateUserProfile, getUnit } from '../utils.js';
 
 // Constants
 const IMAGE_TYPES = ["X-Ray", "MRI", "Ultrasound", "CT"];

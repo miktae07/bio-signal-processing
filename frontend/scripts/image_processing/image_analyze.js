@@ -1,3 +1,5 @@
+import { getBackendAddress } from '../backend_config.js';
+
 /**
  * Gửi hình ảnh đến server backend để phân tích (dự đoán đối tượng hoặc phân đoạn)
  * @param {File} imageFile - File hình ảnh đầu vào (từ input type="file")
@@ -21,6 +23,8 @@ async function analyzeImage(imageFile, imageType, bodyPart) {
     }
 
     try {
+        const backendURL = getBackendAddress(); // lấy địa chỉ backend hiện tại
+
         // Tạo FormData để gửi file và metadata
         const formData = new FormData();
         formData.append('image', imageFile);
@@ -28,7 +32,8 @@ async function analyzeImage(imageFile, imageType, bodyPart) {
         formData.append('body_part', bodyPart);
 
         // Gửi yêu cầu POST đến backend
-        const response = await fetch('https://13.250.3.11/predict_image', {
+        console.info('Get image result from URL:', `${backendURL}/predict_image`);
+        const response = await fetch(`${backendURL}/predict_image`, {
             method: 'POST',
             body: formData
         });

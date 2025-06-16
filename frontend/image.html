@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,11 +11,22 @@
   <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
   <link rel="icon" href="./favicon.ico" type="image/x-icon">
 </head>
+
 <body class="bg-gray-100 min-h-screen">
   <!-- Sidebar -->
   <button id="toggleSidebarBtn" class="fixed">☰</button>
   <div id="sidebar-container"></div>
-
+  <div id="settings-container" class="top-4 right-4">
+    <button id="settings-btn">
+      ⚙️
+    </button>
+    <div id="settings-dropdown" class="hidden">
+      <h3 class="text-lg font-semibold mb-2">Cài Đặt</h3>
+      <button id="change-theme-btn" class="mb-2">Giao diện</button>
+      <button id="change-lang-btn" class="mb-2">Ngôn Ngữ</button>
+      <button id="connect-backend-btn">Địa chỉ Backend</button>
+    </div>
+  </div>
   <!-- Main Content -->
   <main class="ml-64 p-4">
     <div id="theme-container"></div>
@@ -40,21 +52,39 @@
       </div>
       <p class="mb-4"><strong>Bạn chọn:</strong> <span id="selection">CT - Gan</span></p>
       <input type="file" id="fileInput" accept="image/jpeg,image/png" multiple class="mb-4">
-      <button id="analyzeBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400" disabled>Phân tích</button>
+      <button id="analyzeBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
+        disabled>Phân tích</button>
       <div id="loading" class="hidden text-blue-600 mt-2">Đang phân tích...</div>
       <div id="error" class="hidden text-red-600 mt-2"></div>
       <div id="results" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4"></div>
     </div>
   </main>
   <script type="module">
-      import { createSidebar } from './scripts/components/sidebar.js';
-      import { initTheme } from './scripts/theme.js';
-      const sidebarContainer = document.getElementById('sidebar-container');
-      sidebarContainer.appendChild(createSidebar());
-      initTheme('theme-container');
+    import { createSidebar } from './scripts/components/sidebar.js';
+    import { initTheme } from './scripts/theme.js';
+    const sidebarContainer = document.getElementById('sidebar-container');
+    sidebarContainer.appendChild(createSidebar());
+    initTheme('');
   </script>
   <script type="module" src="./scripts/utils.js"></script>
+  <script type="module" src="./scripts/setting.js"></script>
   <script type="module" src="./scripts/render.js"></script>
-  <script type="module" src="./scripts/image.js"></script>
+  <script type="module" src="./scripts/page/image.js"></script>
+  <div id="backend-modal" class="hidden">
+    <div class="modal-content bg-white rounded-lg shadow-lg p-6 w-96">
+      <h2 class="text-xl font-semibold mb-4">Nhập Địa Chỉ Backend</h2>
+      <input id="backend-address" type="text" class="backend-input w-full border border-gray-300 rounded-lg p-3 mb-6"
+        placeholder="Ví dụ: http://localhost:5000" />
+      <div class="flex justify-end space-x-3">
+        <button id="cancel-backend-btn" class="btn-cancel px-5 py-2 rounded-lg shadow hover:shadow-md transition">
+          Hủy
+        </button>
+        <button id="submit-backend-btn" class="btn-submit px-6 py-2 rounded-lg shadow hover:shadow-md transition">
+          Kết Nối
+        </button>
+      </div>
+    </div>
+  </div>
 </body>
+
 </html>

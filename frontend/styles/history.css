@@ -183,7 +183,7 @@ tbody tr:hover {
 }
 
 /* Download Button */
-button:not(#loadDataBtn) {
+#loadDataBtn {
     background-color: #3b82f6;
     color: #ffffff;
     padding: 0.6rem 1.2rem;
@@ -198,7 +198,7 @@ button:not(#loadDataBtn) {
     display: inline-block;
 }
 
-button:not(#loadDataBtn):hover {
+#loadDataBtn:hover {
     background-color: #2563eb;
     transform: translateY(-2px);
 }
@@ -246,7 +246,7 @@ button:not(#loadDataBtn):hover {
         padding: 0.5rem;
     }
 
-    button:not(#loadDataBtn) {
+    #loadDataBtn {
         width: 100%;
         text-align: center;
     }
