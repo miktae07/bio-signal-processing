@@ -23,11 +23,19 @@
         <button id="settings-btn">
             ⚙️
         </button>
-        <div id="settings-dropdown" class="hidden">
+        <div id="settings-dropdown" class="hidden bg-white shadow rounded p-4 mt-2">
             <h3 class="text-lg font-semibold mb-2">Cài Đặt</h3>
-            <button id="change-theme-btn" class="mb-2">Giao diện</button>
-            <button id="change-lang-btn" class="mb-2">Ngôn Ngữ</button>
-            <button id="connect-backend-btn">Địa chỉ Backend</button>
+            <button id="change-theme-btn" class="block w-full text-left mb-2">Thay Đổi Theme</button>
+            <button id="connect-backend-btn" class="block w-full text-left mb-2">Kết Nối Backend</button>
+            <div class="mt-4">
+                <label for="language-select" class="block text-sm font-medium mb-2">Ngôn Ngữ:</label>
+                <div class="flex items-center space-x-2">
+                    <select id="language-select" class="w-full border border-gray-300 rounded p-2">
+                        <option value="vi">Tiếng Việt</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
     <!-- Main Content -->

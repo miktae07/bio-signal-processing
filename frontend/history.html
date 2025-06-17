@@ -16,6 +16,19 @@
     <!-- Sidebar -->
     <button id="toggleSidebarBtn" class="fixed">☰</button>
     <div id="sidebar-container"></div>
+    <!-- Settings Icon -->
+    <div id="settings-container" class="top-4 right-4">
+        <button id="settings-btn">
+            ⚙️
+        </button>
+        <div id="settings-dropdown" class="hidden">
+            <h3 class="text-lg font-semibold mb-2">Cài Đặt</h3>
+            <button id="change-theme-btn" class="mb-2">Giao diện</button>
+            <button id="change-lang-btn" class="mb-2">Ngôn Ngữ</button>
+            <button id="connect-backend-btn">Địa chỉ Backend</button>
+            <button id="user-setting-btn">Người dùng</button>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <main class="ml-64 p-4">
@@ -61,9 +74,10 @@
             import { initTheme } from './scripts/theme.js';
             const sidebarContainer = document.getElementById('sidebar-container');
             sidebarContainer.appendChild(createSidebar());
-            initTheme('theme-container');
+            initTheme();
         </script>
         <script src="./scripts/firebase_utils.js"></script>
+        <script type="module" src="./scripts/setting.js"></script>
         <script type="module" src="./scripts/utils.js"></script>
         <script type="module" src="./scripts/render.js"></script>
         <script type="module" src="./scripts/main.js"></script>

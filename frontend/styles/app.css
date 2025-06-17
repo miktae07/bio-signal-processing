@@ -359,6 +359,20 @@ body.dark .modal-content {
     color: #ffffff; /* Chữ trắng trong dark mode */
 }
 
+body.dark .mt-4 
+{
+    color: #0f172a /* Giữ màu chữ trắng trong dark mode */
+}
+
+body.dark #userSelect, body.dark option {
+    background-color: #0f172a !important; /* Nền modal trong dark mode */
+    color: #ffffff !important; /* Chữ trắng trong dark mode */
+}
+
+#userSelect, #userSelect option {
+    cursor: pointer; /* Thêm con trỏ tay khi hover */
+}
+
 #settings-container {
     display: flex;
     flex-direction: row-reverse;
