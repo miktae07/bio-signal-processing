@@ -18,15 +18,15 @@
     <!-- Sidebar -->
     <button id="toggleSidebarBtn" class="fixed">☰</button>
     <div id="sidebar-container"></div>
+
     <!-- Settings Icon -->
     <div id="settings-container" class="top-4 right-4">
-        <button id="settings-btn">
-            ⚙️
-        </button>
+        <button id="settings-btn">⚙️</button>
         <div id="settings-dropdown" class="hidden bg-white shadow rounded p-4 mt-2">
             <h3 class="text-lg font-semibold mb-2">Cài Đặt</h3>
             <button id="change-theme-btn" class="block w-full text-left mb-2">Thay Đổi Theme</button>
             <button id="connect-backend-btn" class="block w-full text-left mb-2">Kết Nối Backend</button>
+            <button id="select-data-btn" class="block w-full text-left mb-2">Chọn Dữ Liệu</button>
             <div class="mt-4">
                 <label for="language-select" class="block text-sm font-medium mb-2">Ngôn Ngữ:</label>
                 <div class="flex items-center space-x-2">
@@ -38,11 +38,11 @@
             </div>
         </div>
     </div>
+
     <!-- Main Content -->
     <main class="ml-64 p-4">
         <div id="theme-container"></div>
         <div class="container mx-auto">
-            <!-- Customize Button -->
             <h1 class="text-3xl font-bold mb-4">🏠 Trang Chủ – Hiển Thị Dữ Liệu</h1>
             <div id="error" class="text-red-600 hidden"></div>
             <h2 class="text-2xl font-semibold mt-6 mb-4">📊 Dữ liệu Hiện Tại</h2>
@@ -52,19 +52,30 @@
             <div id="charts"></div>
         </div>
     </main>
-    <!-- Scripts -->
-    <script type="module">
-        import { createSidebar } from './scripts/components/sidebar.js';
-        import { initTheme } from './scripts/theme.js';
-        const sidebarContainer = document.getElementById('sidebar-container');
-        sidebarContainer.appendChild(createSidebar());
-        initTheme();
-    </script>
-    <script src="./scripts/firebase_utils.js"></script>
-    <script type="module" src="./scripts/setting.js"></script>
-    <script type="module" src="./scripts/utils.js"></script>
-    <script type="module" src="./scripts/render.js"></script>
-    <script type="module" src="./scripts/main.js"></script>
+
+    <!-- Sensor Selection Modal -->
+    <div id="sensor-modal" class="hidden">
+        <div class="modal-content bg-white rounded-lg shadow-lg p-6 w-96">
+            <h2 class="text-xl font-semibold mb-4">Chọn Dữ Liệu Hiển Thị</h2>
+            <div class="flex justify-between items-center mb-4">
+                <button id="selectAllSensors" class="text-sm text-blue-600 underline">Chọn tất cả</button>
+                <button id="deselectAllSensors" class="text-sm text-red-600 underline">Bỏ chọn tất cả</button>
+            </div>
+
+            <div id="sensorCheckboxes" class="flex flex-col gap-2 mb-6"></div>
+
+            <div class="flex justify-end space-x-3">
+                <button id="cancel-sensor-btn"
+                    class="btn-cancel px-5 py-2 rounded-lg shadow hover:shadow-md transition">
+                    Hủy
+                </button>
+                <button id="save-sensor-btn" class="btn-submit px-6 py-2 rounded-lg shadow hover:shadow-md transition">
+                    Lưu
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Backend Connection Modal -->
     <div id="backend-modal" class="hidden">
         <div class="modal-content bg-white rounded-lg shadow-lg p-6 w-96">
@@ -84,6 +95,23 @@
             </div>
         </div>
     </div>
+    <!-- Loading Spinner -->
+    <div id="loading-overlay" class="fixed inset-0 bg-white bg-opacity-70 flex items-center justify-center z-50 hidden">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+    </div>
+    <!-- Scripts -->
+    <script type="module">
+        import { createSidebar } from './scripts/components/sidebar.js';
+        import { initTheme } from './scripts/theme.js';
+        const sidebarContainer = document.getElementById('sidebar-container');
+        sidebarContainer.appendChild(createSidebar());
+        initTheme();
+    </script>
+    <script src="./scripts/firebase_utils.js"></script>
+    <script type="module" src="./scripts/setting.js"></script>
+    <script type="module" src="./scripts/utils.js"></script>
+    <script type="module" src="./scripts/render.js"></script>
+    <script type="module" src="./scripts/main.js"></script>
 </body>
 
 </html>

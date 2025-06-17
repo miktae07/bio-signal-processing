@@ -60,7 +60,7 @@ function parseNode(sensor, node, pathKeys) {
     return records;
 }
 
-async function getSensorGroups() {
+window.getSensorGroups = async function() {
     try {
         const snapshot = await database.ref('/').once('value');
         const data = snapshot.val();
@@ -91,4 +91,4 @@ async function getSensorGroups() {
         console.error('[getSensorGroups] lỗi:', e);
         return {};
     }
-}
+};

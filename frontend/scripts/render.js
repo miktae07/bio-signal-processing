@@ -17,7 +17,7 @@ window.allowDebug = function() {
 let selectedSensors = JSON.parse(localStorage.getItem('selectedSensors')) || {};
 
 // Function to save selected sensors
-function saveSelectedSensors() {
+export function saveSelectedSensors() {
     const checkboxes = document.querySelectorAll('#sensorCheckboxes input[type="checkbox"]');
     const newSelectedSensors = {};
     checkboxes.forEach(checkbox => {
@@ -182,6 +182,25 @@ export function renderCharts(sensorGroups) {
     }
 }
 
+export function renderSensorSelectionModal(sensorGroups) {
+    const checkboxesDiv = document.getElementById('sensorCheckboxes');
+    if (!checkboxesDiv) {
+        console.error('Element with ID "sensorCheckboxes" not found.');
+        return;
+    }
+    checkboxesDiv.innerHTML = ''; // Clear existing checkboxes
+    Object.keys(sensorGroups).forEach(sensor => {
+        const isChecked = selectedSensors[sensor] !== false; // Default to true if not explicitly false
+        const checkbox = `
+            <div class="flex items-center">
+                <input type="checkbox" id="sensor-${sensor}" value="${sensor}" ${isChecked ? 'checked' : ''} class="mr-2">
+                <label for="sensor-${sensor}" class="text-gray-700">${getSensorIcon(sensor)} ${mapLang(sensor)}</label>
+            </div>
+        `;
+        checkboxesDiv.innerHTML += checkbox;
+    });
+}
+
 const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
 const sidebar = document.getElementById('sidebar-container');
 const mainContent = document.querySelector('main');
@@ -240,26 +259,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
-// Function to render sensor selection modal
-function renderSensorSelectionModal(sensorGroups) {
-    const checkboxesDiv = document.getElementById('sensorCheckboxes');
-    if (!checkboxesDiv) {
-        console.error('Element with ID "sensorCheckboxes" not found.');
-        return;
-    }
-    checkboxesDiv.innerHTML = ''; // Clear existing checkboxes
-    Object.keys(sensorGroups).forEach(sensor => {
-        const isChecked = selectedSensors[sensor] !== false; // Default to true if not explicitly false
-        const checkbox = `
-            <div class="flex items-center">
-                <input type="checkbox" id="sensor-${sensor}" value="${sensor}" ${isChecked ? 'checked' : ''} class="mr-2">
-                <label for="sensor-${sensor}" class="text-gray-700">${getSensorIcon(sensor)} ${mapLang(sensor)}</label>
-            </div>
-        `;
-        checkboxesDiv.innerHTML += checkbox;
-    });
-}
 
 // Listen for sensor group updates to populate the modal
 window.addEventListener('fetchSensorGroupsForModal', () => {

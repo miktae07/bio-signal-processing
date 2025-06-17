@@ -12,7 +12,6 @@ export function createSidebar() {
 				<li><a href="analysis.html" class="block p-2 rounded hover:bg-gray-700">📊 Phân Tích</a></li>
 				<li><a href="history.html" class="block p-2 rounded hover:bg-gray-700">🕒 Lịch sử</a></li>
 				<li><a href="image.html" class="block p-2 rounded hover:bg-gray-700">📷 Phân tích ảnh</a></li>
-				<li><a href="#" class="block p-2 rounded hover:bg-gray-700">👤 Người Dùng</a></li>
 			</ul>
 		</nav>
 		<hr class="my-6">
