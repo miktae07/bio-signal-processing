@@ -208,7 +208,6 @@ const mainContent = document.querySelector('main');
 toggleSidebarBtn.addEventListener('click', () => {
     const isSidebarHidden = sidebar.classList.toggle('sidebar-hidden');
     toggleSidebarBtn.classList.toggle('button-hidden', isSidebarHidden);
-    toggleSidebarBtn.textContent = isSidebarHidden ? '☰' : '☰';
     if (isSidebarHidden) {
         mainContent.style.marginLeft = '0';
     } else {

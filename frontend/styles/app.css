@@ -202,7 +202,7 @@ canvas {
 /* Responsive Design */
 @media (max-width: 768px) {
     aside {
-        transform: translateX(-100%);
+        /* transform: translateX(-100%); */
         width: 100%;
         max-width: 256px;
     }
@@ -248,19 +248,55 @@ canvas {
     transition: transform 0.3s ease; /* Hiệu ứng trượt mượt */
 }
 
+/* Thiết lập vị trí cho nút toggle sidebar */
 #toggleSidebarBtn {
-    position: relative;
-    top: 0; /* Cách đỉnh 1rem */
-    left: 19%;
+    position: fixed; /* Sử dụng fixed để giữ nút cố định trên màn hình */
+    top: 1rem; /* Cách đỉnh 1rem */
+    left: 256px; /* Căn trái sát cạnh phải của sidebar (256px là chiều rộng của sidebar) */
     background-color: #3b82f6; /* Màu nền xanh dương */
     color: white;
     border: none;
     border-radius: 0.5rem; /* Bo góc nhẹ */
     padding: 0.5rem 1rem; /* Đệm bên trong */
-    z-index: 100; /* Đảm bảo nút nằm trên sidebar */
+    z-index: 1001; /* Đảm bảo nút nằm trên sidebar */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng */
     cursor: pointer;
-    transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu mượt */
+    transition: background-color 0s ease, left 0s ease; /* Thêm transition cho left */
+}
+
+/* Điều chỉnh vị trí nút khi sidebar bị ẩn */
+.sidebar-hidden #toggleSidebarBtn {
+    left: 0.5rem; /* Di chuyển nút sang trái khi sidebar ẩn */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    aside {
+        width: 100%;
+        max-width: 256px;
+    }
+
+    main {
+        margin-left: 0;
+    }
+
+    /* Khi sidebar active (mở), nút vẫn sát cạnh */
+    aside.active {
+        transform: translateX(0);
+    }
+
+    #toggleSidebarBtn {
+        left: 256px; /* Giữ nút sát cạnh phải sidebar trên màn hình nhỏ khi mở */
+    }
+
+    .sidebar-hidden #toggleSidebarBtn {
+        left: 0.5rem; /* Di chuyển nút sang trái khi sidebar ẩn */
+    }
+
+    /* Điều chỉnh grid cho metrics */
+    #metrics {
+        grid-template-columns: 1fr;
+    }
 }
 
 #toggleSidebarBtn:hover {
