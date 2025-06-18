@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const addressInput = document.getElementById('backend-address');
     const languageSelect = document.getElementById('language-select');
     const sensorCheckboxes = document.getElementById('sensorCheckboxes');
+    const timeFilterBtn = document.getElementById('time-filter-btn');
+
 
     // Language data
     const languageData = {
@@ -30,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
             saveSensors: "Lưu",
             cancel: "Hủy",
             noSensors: "Không có cảm biến nào khả dụng",
+            filterby: "Lọc theo thời điểm",
         },
         en: {
             themeLabelLight: "Dark Mode",
@@ -41,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             saveSensors: "Save",
             cancel: "Cancel",
             noSensors: "No sensors available",
+            filterby: "Filter by hour and minute",
         },
     };
 
@@ -54,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (selectDataBtn) selectDataBtn.textContent = data.selectData;
         if (saveSensorBtn) saveSensorBtn.textContent = data.saveSensors;
         if (cancelSensorBtn) cancelSensorBtn.textContent = data.cancel;
+        if (timeFilterBtn) timeFilterBtn.textContent = data.filterby;
         document.querySelector('label[for="language-select"]').textContent = data.languageLabel;
     }
 
