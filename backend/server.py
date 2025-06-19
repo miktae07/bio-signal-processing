@@ -1,5 +1,4 @@
-
-# server.py
+#!/usr/bin/env python3
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import numpy as np
@@ -7,15 +6,28 @@ import io
 import base64
 from PIL import Image
 from ultralytics import YOLO
+import os
+import sys
 
-# import model maps and functions from predict_image module
-from model.data_processing.ecg_analyse import predict_single_beat
-from model.image_processing.predict_ct_liver_image import *
+# ensure project root is in sys.path for imports
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT not in sys.path:
+    sys.path.append(ROOT)
+
+# Import model maps and functions
+from model.data_processing.ecg_analyse import (
+    preprocess_ecg_signal,
+    predict_single_beat,
+    compute_cardiac_metrics
+)
+from model.image_processing.predict_ct_liver_image import (
+    MODEL_MAP, KERAS_MAP, YOLO_MODELS, detect_objects, predict_ct_liver_mask
+)
 
 app = Flask(__name__)
-CORS(app, origins="*")
+CORS(app, supports_credentials=True)
 
-# Helpers
+# Helpers with debug logs
 def image_to_base64(img) -> str:
     print("Debug: Converting image to base64...")
     if isinstance(img, np.ndarray):
@@ -26,7 +38,7 @@ def image_to_base64(img) -> str:
     print("Debug: Image saved to buffer as PNG.")
     return base64.b64encode(buf.getvalue()).decode('utf-8')
 
-# Supported types & body parts
+
 def _extract_supported():
     print("Debug: Extracting supported image types and body parts from model maps.")
     types = set(k[0] for k in MODEL_MAP.keys()) | set(k[0] for k in KERAS_MAP.keys())
@@ -46,23 +58,41 @@ def index():
 def analyze_ecg():
     print("Debug: Received ECG analysis request.")
     data = request.get_json(force=True) or {}
-    signal = data.get('signal', [])
+    signal = data.get('signal')
     sampling_rate = data.get('sampling_rate', 400)
-    print(f"Debug: Signal length = {len(signal)}, Sampling rate = {sampling_rate}")
+    print(f"Debug: Raw payload={data}")
+    print(f"Debug: Signal length = {len(signal) if isinstance(signal, list) else 'None'}, Sampling rate = {sampling_rate}")
 
-    if not signal:
+    if not isinstance(signal, list) or len(signal) == 0:
         print("Debug: No signal data provided.")
         return jsonify({'error': 'No ECG signal provided'}), 400
 
     try:
-        ecg_array = np.array(signal, dtype=float)
-        print(f"Debug: ECG array shape: {ecg_array.shape}, dtype: {ecg_array.dtype}")
-        predicted_class, confidence, class_name = predict_single_beat(ecg_array, sampling_rate)
-        print(f"Debug: ECG predicted class = {predicted_class}, confidence = {confidence}, label = {class_name}")
+        # Preprocess for metrics
+        beats = preprocess_ecg_signal(np.array(signal, dtype=float), sampling_rate)
+        beat = beats[0]
+        # Calculate cardiac metrics (using fs=125Hz after preprocess)
+        metrics = compute_cardiac_metrics(beat, fs=125)
+        num_rr = len(metrics['rr_intervals'])
+        print(f"Debug: Cardiac metrics: {metrics}")
+
+        # Prediction
+        predicted_class, confidence, class_name = predict_single_beat(np.array(signal, dtype=float), sampling_rate)
+        print(f"Debug: ECG predicted class={predicted_class}, confidence={confidence}, class_name={class_name}")
+
         return jsonify({
-            'predicted_class': int(predicted_class),
+            'signal_length': len(signal),
+            'sampling_rate': sampling_rate,
+            'predicted_class': int(predicted_class) if predicted_class is not None else None,
+            'class_name': class_name,
             'confidence': float(confidence),
-            'class_name': class_name
+            'cardiac_metrics': {
+                'hr_mean': metrics['hr_mean'],
+                'rr_intervals': metrics['rr_intervals'],
+                'rr_mean': metrics['rr_mean'],
+                'rr_std': metrics['rr_std'],
+                'num_beats': metrics.get('num_beats', None)
+            }
         })
     except Exception as e:
         print(f"Debug: ECG processing failed. Error: {e}")
@@ -77,7 +107,7 @@ def predict_image():
 
     image_file = request.files['image']
     image_type = request.form.get('image_type')
-    body_part = request.form.get('body_part')
+    body_part  = request.form.get('body_part')
     print(f"Debug: image_type={image_type}, body_part={body_part}")
 
     if image_type not in SUPPORTED_IMAGE_TYPES:
