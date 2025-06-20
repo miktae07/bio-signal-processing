@@ -12,7 +12,7 @@ import os
 
 # Import your ECG analysis functions
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from model.data_processing.ecg_analyse import predict_ecg, predict_single_beat, CLASS_MAPPING
+from model.data_processing.ecg_analyse import predict_ecg_with_images as predict_ecg, predict_single_beat_with_images as predict_single_beat, CLASS_MAPPING
 
 def read_ecg_from_csv(file_path, row_numbers=None):
     """
@@ -94,7 +94,7 @@ def predict_from_csv(file_path, sampling_rate=400, row_numbers=None, output_file
         all_results = []
 
         for i, (ecg_signal, expected_label) in enumerate(zip(ecg_signals, expected_labels)):
-            print(f"\n?? Analyzing beat {i} (Expected label: {expected_label})")
+            print(f"\nAnalyzing beat {i} (Expected label: {expected_label})")
 
             predicted_class, confidence, class_name = predict_single_beat(ecg_signal, sampling_rate)
 
@@ -112,7 +112,7 @@ def predict_from_csv(file_path, sampling_rate=400, row_numbers=None, output_file
             print(f"    Expected label: {expected_label}")
             print(f"    Predicted class: {class_name}")
             print(f"    Confidence: {confidence:.3f} ({confidence*100:.1f}%)")
-            print(f"    {'? CORRECT' if result['is_correct'] else '? INCORRECT'}")
+            print(f"    {'CORRECT' if result['is_correct'] else 'INCORRECT'}")
 
         correct_predictions = sum(1 for r in all_results if r['is_correct'])
         accuracy = correct_predictions / len(all_results)
@@ -128,7 +128,7 @@ def predict_from_csv(file_path, sampling_rate=400, row_numbers=None, output_file
             save_results_to_file(all_results, output_file, file_path, sampling_rate)
 
     except Exception as e:
-        print(f"? Error during prediction: {e}")
+        print(f"Error during prediction: {e}")
         import traceback
         traceback.print_exc()
 
@@ -160,10 +160,10 @@ def save_results_to_file(results, output_file, input_file, sampling_rate):
                 f.write(f"  Result: {'CORRECT' if result['is_correct'] else 'INCORRECT'}\n")
                 f.write(f"  Signal length: {len(result['ecg_signal'])} points\n")
 
-        print(f"?? Results saved to: {output_file}")
+        print(f" Results saved to: {output_file}")
 
     except Exception as e:
-        print(f"? Error saving results: {e}")
+        print(f"Error saving results: {e}")
 
 if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))
