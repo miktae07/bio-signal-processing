@@ -64,8 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize language on page load
     const savedLang = localStorage.getItem('language') || 'vi'; // Default to Vietnamese
-    languageSelect.value = savedLang;
-    updateLanguage(savedLang);
+    if(!languageData[savedLang]) {
+        languageSelect.value = savedLang;
+        updateLanguage(savedLang);
+    }
 
     // Event listener for language selection
     languageSelect.addEventListener('change', (event) => {

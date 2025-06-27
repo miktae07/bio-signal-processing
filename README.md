@@ -27,6 +27,11 @@ Mục tiêu chính là hỗ trợ giám sát liên tục, cảnh báo sớm và 
 
 ---
 
+🌐 Deploy
+Dự án Bio-Signal-Processing được triển khai trên Netlify để cung cấp giao diện web cho Dashboard và Analysis. Trang web chính thức: https://bio-signal-processing.netlify.app.
+
+---
+
 ## 📂 Cấu trúc thư mục
 
 ```bash
