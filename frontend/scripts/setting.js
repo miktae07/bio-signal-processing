@@ -70,11 +70,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Event listener for language selection
-    languageSelect.addEventListener('change', (event) => {
-        const selectedLang = event.target.value;
-        localStorage.setItem('language', selectedLang); // Save language preference
-        updateLanguage(selectedLang);
-    });
+    if (!languageSelect) {
+        languageSelect.addEventListener('change', (event) => {
+            const selectedLang = event.target.value;
+            localStorage.setItem('language', selectedLang); // Save language preference
+            updateLanguage(selectedLang);
+        });
+    }
 
     // Function to update theme label
     function updateThemeLabel() {
