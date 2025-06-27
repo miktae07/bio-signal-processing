@@ -176,4 +176,4 @@ def predict_image():
 
 if __name__ == '__main__':
     print("Debug: Starting Flask server...")
-    app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)
+    app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False, ssl_context='adhoc')
