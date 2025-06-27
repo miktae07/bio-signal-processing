@@ -24,6 +24,7 @@ log_debug(f"Weights directory: {WEIGHTS_DIR}")
 # Only the models needed
 KERAS_MAP = {
     ("CT", "Liver"): WEIGHTS_DIR / "best_unet_resnet18_model.keras",
+    ("Photo", "Skin"): WEIGHTS_DIR / "skin_disease.weights.h5", 
 }
 YOLO_CHEST_XRAY_PATH = WEIGHTS_DIR / "chest_xray.pt"
 

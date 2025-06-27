@@ -8,6 +8,7 @@ from PIL import Image
 from ultralytics import YOLO
 import os
 import sys
+from pathlib import Path
 
 # ensure project root is in sys.path for imports
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,9 +21,14 @@ from model.data_processing.ecg_analyse import (
     predict_single_beat_with_images as predict_single_beat,
     compute_cardiac_metrics_with_images as compute_cardiac_metrics
 )
+
 # Import CT/liver image processing
 from model.image_processing.predict_ct_liver_image import (
     MODEL_MAP, KERAS_MAP, YOLO_MODELS, detect_objects, predict_ct_liver_mask
+)
+
+from model.image_processing.predict_skin_image import (
+    predict_skin_disease
 )
 
 app = Flask(__name__)
@@ -92,6 +98,7 @@ def analyze_ecg():
         print(f"Debug: ECG processing failed. Error: {e}")
         return jsonify({'error': 'ECG processing failed', 'details': str(e)}), 500
 
+
 @app.route('/predict_image', methods=['POST'])
 def predict_image():
     print("Debug: Received request for image prediction.")
@@ -123,6 +130,19 @@ def predict_image():
 
     key = (image_type, body_part)
     print(f"Debug: Model lookup key: {key}")
+    # ======= Skin disease classification (Không dùng preload) =======
+    if image_type == "Photo" and body_part == "Skin":
+        print("Debug: Gọi model skin disease từ file predict_skin.")
+        try:
+            label, confidence = predict_skin_disease(img)
+            return jsonify({
+                'predicted_label': label,
+                'confidence': confidence
+            })
+        except Exception as e:
+            print(f"Debug: Skin model predict failed. Error: {e}")
+            return jsonify({'error': 'Skin prediction failed', 'details': str(e)}), 500
+
 
     # YOLO branch
     if key in MODEL_MAP:

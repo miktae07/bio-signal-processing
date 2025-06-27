@@ -54,7 +54,27 @@ export function mapLang(text) {
         "BPM": "Nhịp tim(BPM)",
         "ECG": "Điện tim(ECG)",
         "SpO2": "Nồng độ Oxy trong máu(SpO2)",
-        "Temp": "Nhiệt độ cơ thể"
+        "Temp": "Nhiệt độ cơ thể",
+          // Nhóm bệnh da liễu từ label_encoder
+    "Acne and Rosacea Photos": "Mụn trứng cá và bệnh đỏ da (Rosacea)",
+    "Actinic Keratosis Basal Cell Carcinoma and other Malignant Lesions": "Dày sừng ánh sáng, ung thư biểu mô tế bào đáy và tổn thương ác tính khác",
+    "Atopic Dermatitis Photos": "Viêm da cơ địa",
+    "Cellulitis Impetigo and other Bacterial Infections": "Viêm mô tế bào, chốc lở và nhiễm khuẩn da khác",
+    "Eczema Photos": "Chàm (eczema)",
+    "Exanthems and Drug Eruptions": "Phát ban và phản ứng thuốc trên da",
+    "Herpes HPV and other STDs Photos": "Herpes, HPV và các bệnh lây qua đường tình dục khác",
+    "Light Diseases and Disorders of Pigmentation": "Rối loạn sắc tố và các bệnh da do ánh sáng",
+    "Lupus and other Connective Tissue diseases": "Lupus và bệnh mô liên kết khác",
+    "Melanoma Skin Cancer Nevi and Moles": "U hắc tố, ung thư da, nốt ruồi và bớt",
+    "Poison Ivy Photos and other Contact Dermatitis": "Viêm da tiếp xúc do cây độc và các nguyên nhân khác",
+    "Psoriasis pictures Lichen Planus and related diseases": "Vảy nến, lichen phẳng và bệnh liên quan",
+    "Seborrheic Keratoses and other Benign Tumors": "Dày sừng tiết bã và u lành tính khác",
+    "Systemic Disease": "Bệnh hệ thống",
+    "Tinea Ringworm Candidiasis and other Fungal Infections": "Nấm da, hắc lào, nấm Candida và các nhiễm nấm khác",
+    "Urticaria Hives": "Mề đay",
+    "Vascular Tumors": "U mạch máu",
+    "Vasculitis Photos": "Viêm mạch",
+    "Warts Molluscum and other Viral Infections": "Mụn cóc, u mềm lây và các nhiễm virus khác",
     };
     return mapping[text] || text;
 }

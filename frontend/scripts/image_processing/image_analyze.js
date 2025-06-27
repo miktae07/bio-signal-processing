@@ -7,17 +7,21 @@ import { getBackendAddress } from '../backend_config.js';
  * @param {string} bodyPart - Bộ phận cơ thể (Chest, Brain, Liver, Abdomen)
  * @returns {Promise<Object>} - Kết quả JSON từ backend
  */
+
+const SUPPORTED_TYPES = ["X-Ray", "MRI", "Ultrasound", "CT", "Photo"];
+const SUPPORTED_BODY_PARTS = ["Chest", "Brain", "Liver", "Abdomen", "Skin"];
+
 async function analyzeImage(imageFile, imageType, bodyPart) {
     // Kiểm tra đầu vào
     if (!(imageFile instanceof File)) {
         console.error('❌ Đầu vào imageFile không hợp lệ:', imageFile);
         return { error: 'Input image file is invalid' };
     }
-    if (!['X-Ray', 'MRI', 'Ultrasound', 'CT'].includes(imageType)) {
+    if (!SUPPORTED_TYPES.includes(imageType)) {
         console.error('❌ Loại hình ảnh không hợp lệ:', imageType);
         return { error: 'Invalid image type. Must be X-Ray, MRI, Ultrasound, or CT' };
     }
-    if (!['Chest', 'Brain', 'Liver', 'Abdomen'].includes(bodyPart)) {
+    if (!SUPPORTED_BODY_PARTS.includes(bodyPart)) {
         console.error('❌ Bộ phận cơ thể không hợp lệ:', bodyPart);
         return { error: 'Invalid body part. Must be Chest, Brain, Liver, or Abdomen' };
     }

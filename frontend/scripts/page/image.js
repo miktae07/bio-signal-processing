@@ -1,14 +1,17 @@
 import analyzeImage from '../image_processing/image_analyze.js';
-import { setGreeting, updateUserProfile, getUnit } from '../utils.js';
+import { setGreeting, updateUserProfile, getUnit, mapLang } from '../utils.js';
 
 // Constants
-const IMAGE_TYPES = ["X-Ray", "MRI", "Ultrasound", "CT"];
+const IMAGE_TYPES = ["X-Ray", "MRI", "Ultrasound", "CT", "Photo"];
+
 const BODY_PARTS = {
   Ngực: "Chest",
   Não: "Brain",
   Gan: "Liver",
-  Bụng: "Abdomen"
+  Bụng: "Abdomen",
+  Da: "Skin"
 };
+
 
 // DOM Elements
 const imageTypeSelect = document.getElementById('imageType');
@@ -91,6 +94,15 @@ async function handleAnalyze() {
       imagePair.appendChild(createImageWithCaption(result.result_image, `Kết quả ${imageType} ${bodyPart}`));
     } else if (result.mask_image) {
       imagePair.appendChild(createImageWithCaption(result.mask_image, `Mask phân đoạn ${imageType} ${bodyPart}`));
+    } else if (result.predicted_label && result.predicted_label !== 'None' && result.confidence !== undefined) {
+      const p = document.createElement('p');
+      p.className = 'mt-2 text-green-700';
+      console.info(result.predicted_label);
+      const translatedLabel = mapLang(result.predicted_label);
+      console.info(translatedLabel);
+
+      p.textContent = `Dự đoán: ${translatedLabel} - Độ chính xác: ${(result.confidence * 100).toFixed(2)}%`;
+      resultCard.appendChild(p);
     } else {
       const p = document.createElement('p');
       p.className = 'text-red-600 mt-2';
