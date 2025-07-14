@@ -1,5 +1,5 @@
 import { renderMetrics, renderCharts } from './render.js';
-import { setGreeting, updateUserProfile } from './utils.js';
+import { setGreeting } from './utils.js';
 
 let isLoading = false;
 
@@ -26,8 +26,10 @@ async function loadData() {
         </div>
     `;
 
-    metricsDiv.innerHTML = customSpinner;
-    chartsDiv.innerHTML = customSpinner.replace('Đang tải dữ liệu...', 'Đang tải biểu đồ...');
+    if (metricsDiv && chartsDiv) {
+        metricsDiv.innerHTML = customSpinner;
+        chartsDiv.innerHTML = customSpinner.replace('Đang tải dữ liệu...', 'Đang tải biểu đồ...');
+    }
 
     console.log('--- loadData start ---');
     const groups = await getSensorGroups();
@@ -54,12 +56,6 @@ async function loadData() {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOMContentLoaded');
     setGreeting();
-    updateUserProfile('user1');
-
-    document.getElementById('userSelect')?.addEventListener('change', (e) => {
-        updateUserProfile(e.target.value);
-    });
-
     loadData();
 
     let debounceTimeout;

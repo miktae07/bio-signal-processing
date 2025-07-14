@@ -166,10 +166,6 @@ async function renderHistoryData() {
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     setGreeting();
-    updateUserProfile('user1');
-    document.getElementById('userSelect').addEventListener('change', (e) => {
-        updateUserProfile(e.target.value);
-    });
     setDefaultDateTime();
     populateSensorSelect();
     document.getElementById('loadDataBtn').addEventListener('click', renderHistoryData);

@@ -295,6 +295,7 @@ async function applyTimeFilter() {
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Initializing pick_hour.js');
+  console.log(moment.tz("2025-07-14 19:00", "Asia/Ho_Chi_Minh").format());
   const settingsDropdown = document.getElementById('settings-dropdown');
   if (settingsDropdown) {
     const timeFilterBtn = document.createElement('button');

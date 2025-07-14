@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelSensorBtn = document.getElementById('cancel-sensor-btn');
     const saveSensorBtn = document.getElementById('save-sensor-btn');
     const addressInput = document.getElementById('backend-address');
-    const languageSelect = document.getElementById('language-select');
     const sensorCheckboxes = document.getElementById('sensorCheckboxes');
     const timeFilterBtn = document.getElementById('time-filter-btn');
 
@@ -64,19 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize language on page load
     const savedLang = localStorage.getItem('language') || 'vi'; // Default to Vietnamese
-    if(!languageData[savedLang]) {
-        languageSelect.value = savedLang;
-        updateLanguage(savedLang);
-    }
-
-    // Event listener for language selection
-    if (!languageSelect) {
-        languageSelect.addEventListener('change', (event) => {
-            const selectedLang = event.target.value;
-            localStorage.setItem('language', selectedLang); // Save language preference
-            updateLanguage(selectedLang);
-        });
-    }
 
     // Function to update theme label
     function updateThemeLabel() {

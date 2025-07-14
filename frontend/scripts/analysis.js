@@ -2,7 +2,7 @@ import analyzeBPM from './data_processing/analyzeBPM.js';
 import analyzeSpO2 from './data_processing/analyzeSpO2.js';
 import analyzeECG from './data_processing/analyzeECG.js';
 import analyzeTemp from './data_processing/analyzeTemp.js';
-import { setGreeting, updateUserProfile, getUnit, getSensorIcon, mapLang } from './utils.js';
+import { setGreeting, mapLang } from './utils.js';
 
 // Global debug flag
 let isDebugEnabled = false;
@@ -385,10 +385,6 @@ async function renderAnalysisData() {
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     setGreeting();
-    updateUserProfile('user1');
-    document.getElementById('userSelect').addEventListener('change', (e) => {
-        updateUserProfile(e.target.value);
-    });
     document.getElementById('startDate').value = '2025-01-01';
     document.getElementById('endDate').value = moment().format('YYYY-MM-DD'); // Mặc định đến ngày hiện tại
     populateTimeOptions();

@@ -1,5 +1,5 @@
 import analyzeImage from '../image_processing/image_analyze.js';
-import { setGreeting, updateUserProfile, getUnit, mapLang } from '../utils.js';
+import { mapLang } from '../utils.js';
 
 // Constants
 const IMAGE_TYPES = ["X-Ray", "MRI", "Ultrasound", "CT", "Photo"];
@@ -142,13 +142,3 @@ fileInput.addEventListener('change', (e) => {
 });
 analyzeBtn.addEventListener('click', handleAnalyze);
 document.getElementById('toggleSidebarBtn').addEventListener('click', toggleSidebar);
-document.getElementById('userSelect').addEventListener('change', (e) => {
-  updateUserProfile(e.target.value);
-});
-
-// Initial setup
-document.addEventListener('DOMContentLoaded', () => {
-  updateSelection();
-  setGreeting();
-  updateUserProfile('user1');
-});
